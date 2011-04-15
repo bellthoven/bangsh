@@ -86,6 +86,7 @@ function bang_hasflag () {
 # @params opt - Opt which value is to be returned
 function bang_getopt () {
 	echo "${_BANG_PARSED_ARGS[$1]}"
+	return 0
 }
 
 # Shows usage informations
@@ -116,12 +117,6 @@ function bang_show_usage() {
 	exit 0
 }
 
-# Returns the option value passed in command line
-function bang_getopt () {
-	local opt="$1"
-	echo $_BANG_ARGV
-}
-
 # Raises an error an exit the code
 # @params [msg ...] - Message of the error to be raised
 function bang_raise_error () {
@@ -147,15 +142,18 @@ function bang_init () {
 		elif bang_isflag "$arg"; then
 			arg=$(bang_alias2opt "$arg")
 			_BANG_PARSED_FLAGS+=("$arg")
+		else
+			bang_raise_error "Option '$arg' is not a valid option."
 		fi
 	done
 }
 
+# Checks for required args... if some is missing, raises an error
 function bang_check_required_args() {
 	local reqopt=""
 	for reqopt in "${_BANG_REQUIRED_ARGS[@]}"; do
 		if ! key_exists "$reqopt" "_BANG_PARSED_ARGS" && ! in_array "$reqopt" "_BANG_PARSED_FLAGS"; then
-			bang_raise_error "Option '$reqopt' is required and was not especified"
+			bang_raise_error "Option '$reqopt' is required and was not specified"
 		fi
 	done
 }
