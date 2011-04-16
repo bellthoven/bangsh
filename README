@@ -1,0 +1,62 @@
+Bash.sh - Framework for easy Shell Scripting
+============================================
+
+This is a framework intended to created shell scripts in an
+easy way. It has functions that help to parse command line arguments
+and work with arrays for now.
+
+New ideas and contributions are welcome. Report the issues in the GitHub page.
+
+Example of usage:
+
+    #!/bin/sh
+	# app.sh
+	source ./bang.sh
+	 
+	# Help flag
+	bang_addflag --help "Show this help"
+	bang_addalias --help -h
+	# Message
+	bang_addopt --msg "Message to be printed!"
+	bang_addalias --msg -m
+	# Output
+	bang_addflag --stderr "Redirects the message to stderr"
+	 
+	bang_required_args "--msg"
+	 
+	bang_init "$@"
+	 
+	if bang_hasflag --help; then
+		bang_show_usage
+	else
+		bang_check_required_args
+		msg="Your message is: $(bang_getopt --msg)"
+		cmd="echo"
+		bang_hasflag --stderr && cmd="print_e"
+		$cmd "$msg"
+	fi
+
+No arguments:
+	$ ./app.sh
+	The program was aborted due an error:
+	 
+		Option '--msg' is required and was not specified
+
+Showing usage:
+	$ ./app.sh -h # ou ./app.sh --help
+	 
+	Showing script usage:
+	 
+	Options:
+	--msg|-m <value>        (Required) Message to be printed!
+	Flags:
+	--help|-h        Show this help
+	--stderr         Redirects the message to stderr
+
+Prints to STDOUT
+	$ ./app.sh --msg "Hello World" # ou ./app.sh -m "Hello World"
+	Your message is: Hello World
+
+Prints to STDERR
+	$ ./app.sh --msg "Hello World" --stderr 1>/dev/null
+	Your message is: Hello World
