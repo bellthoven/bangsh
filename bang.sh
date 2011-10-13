@@ -230,6 +230,13 @@ function sanitize_arg () {
 	echo "$arg"
 }
 
+# Checks if a function exists
+# @params funcname -- Name of function to be checked
+function function_exists () {
+	declare -f "$1" &>/dev/null && return 0
+	return 1
+}
+
 # Print to the stderr
 # @params [text ...] - Text to be printed in stderr
 function print_e () {
