@@ -9,30 +9,30 @@ New ideas and contributions are welcome. Report the issues in the GitHub page.
 
 Example of usage:
 
-    #!/bin/sh
+    #!/bin/bash
 	# app.sh
 	source ./bang.sh
 	 
 	# Help flag
-	bang_addflag --help "Show this help"
-	bang_addalias --help -h
+	bang.add_flag --help "Show this help"
+	bang.add_alias --help -h
 	# Message
-	bang_addopt --msg "Message to be printed!"
-	bang_addalias --msg -m
+	bang.add_opt --msg "Message to be printed!"
+	bang.add_alias --msg -m
 	# Output
-	bang_addflag --stderr "Redirects the message to stderr"
+	bang.add_flag --stderr "Redirects the message to stderr"
 	 
-	bang_required_args "--msg"
+	bang.required_args "--msg"
 	 
-	bang_init "$@"
+	bang.init "$@"
 	 
-	if bang_hasflag --help; then
-		bang_show_usage
+	if bang.has_flag? --help; then
+		bang.show_usage
 	else
-		bang_check_required_args
-		msg="Your message is: $(bang_getopt --msg)"
+		bang.check_required_args
+		msg="Your message is: $(bang.getopt --msg)"
 		cmd="echo"
-		bang_hasflag --stderr && cmd="print_e"
+		bang.has_flag? --stderr && cmd="print_e"
 		$cmd "$msg"
 	fi
 
