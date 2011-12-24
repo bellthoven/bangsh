@@ -1,71 +1,110 @@
-#!/bin/sh
-source ./bang.sh
-
+#!/bin/bash
 # Unit Test Framework
 
 _BANG_TESTFUNCS=()
 _BANG_TESTDESCS=()
+_BANG_ASSERTIONS_FAILED=0
+_BANG_ASSERTIONS_PASSED=0
+declare -A _BANG_MOCKS=()
 
 # Adds test cases to be executed
 # @param testcase -- Function with assertions
 # @param description -- Description of the testcase
-function bang_addTestCase () {
-	local argnum=$(_find_separator $@)
-	if function_exists "$1"; then
+function bang.add_test_case () {
+	if function_exists? "$1"; then
 		_BANG_TESTFUNCS+=($1)
-		_BANG_TESTDESCS+=("$2")
+		shift
+		_BANG_TESTDESCS+=("$@")
 	fi
 }
 
 # Runs all added test cases
-function bang_runTests() {
+function bang.run_tests() {
 	local i=0
+	echo
 	while [ $i -lt ${#_BANG_TESTFUNCS[@]} ]; do
+		declare -A _BANG_FLAG_ARGS=()
+		declare -A _BANG_ARGS=()
+		declare -A _BANG_ALIASES=()
+		declare -A _BANG_PARSED_ARGS=()
+		_BANG_PARSED_FLAGS=()
+		_BANG_REQUIRED_ARGS=()
 		echo "Running testcase '${_BANG_TESTFUNCS[$i]}' (${_BANG_TESTDESCS[$i]})"
+		echo
 		${_BANG_TESTFUNCS[$i]}
 		let i++
 	done
+	echo "$i tests executed (Assertions: $_BANG_ASSERTIONS_PASSED passed / $_BANG_ASSERTIONS_FAILED failed)"
+}
+
+# Autoadd and run all test functions
+function bang.autorun_tests () {
+	for func in $(declare -f | grep '^bang\.test\.' | sed 's/ ().*$//'); do
+		bang.add_test_case "$func"
+	done
+	bang.run_tests
 }
 
 # Asserts a function exit code is zero
 # @param funcname -- Name of the function
-function bang_assertTrue () {
-	if $@ &>/dev/null; then
-		echo "'$@'... OK"
-		return 0
-	else
-		echo "'$@'... FAIL"
-		print_e "Expected TRUE, but exit code is FALSE for $@"
+function bang.assert_true () {
+	if [ $1 -gt 0 ]; then
+		print_e "'$@'... FAIL"
+		print_e "Expected TRUE, but exit code is NOT 0"
+		let _BANG_ASSERTIONS_FAILED++
 		return 1
 	fi
+	let _BANG_ASSERTIONS_PASSED++
+	return 0
 }
 
 # Asserts a functoin exit code is 1
 # @param funcname -- Name of the function
-function bang_assertFalse () {
-	if $@ &> /dev/null; then
-		echo "'$@'... FAIL"
-		print_e "Expected FALSE, but exit code is TRUE for $@"
+function bang.assert_false () {
+	if [ $1 -eq 0 ]; then
+		print_e "'$@'... FAIL"
+		print_e "Expected FALSE, but exit code is 0"
+		let _BANG_ASSERTIONS_FAILED++
 		return 1
-	else
-		echo "'$@'... OK"
-		return 0
 	fi
+	let _BANG_ASSERTIONS_PASSED++
+	return 0
 }
 
 # Asserts a function output is the same as required
 # @param reqvalue -- Value to be equals to the output
 # @param funcname -- Name of the function which result is to be tested
-function bang_assertEquals () {
+function bang.assert_equals () {
 	local val="$1"
 	shift
-	local result="$($@)"
-	if [ "$val" == "$result" ]; then
-		echo "'$@' equals to '$val'... OK"
-		return 0
-	else
-		echo "'$@' equals to '$val'... FAIL"
-		print_e "Extected '$val', but it was returned '$result'"
+	local result="$1"
+	if [ "$val" != "$result" ]; then
+		print_e "'$@' equals to '$val'... FAIL"
+		print_e "Expected '$val', but it was returned '$result'"
+		let _BANG_ASSERTIONS_FAILED++
 		return 1
+	fi
+	let _BANG_ASSERTIONS_PASSED++
+	return 0
+}
+
+function bang.mock_do () {
+	if function_exists? "$1" && function_exists? "$2"; then
+		actualFunc=$(declare -f "$1" | sed '1d;2d;$d')
+		func=$(declare -f "$2" | sed '1d;2d;$d')
+		func_name=$(echo $1 | sed 's/\./_/g')
+		_BANG_MOCKS+=(["$func_name"]="$actualFunc")
+		eval "function $1 () {
+			$func
+		}"
+	fi
+}
+
+function bang.mock_undo () {
+	func_name=$(echo $1 | sed 's/\./_/g')
+	if key_exists? "$func_name" "_BANG_MOCKS"; then
+		eval "function $1 () {
+			${_BANG_MOCKS["$func_name"]}
+		}"
 	fi
 }
