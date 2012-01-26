@@ -1,6 +1,5 @@
 #!/bin/bash
 # vim: foldmethod=marker foldmarker={,}
-# TODO: verificar se uma opt já não é uma flag e vice versa
 # BASH_SOURCE - BASH_ARGV - BASH_LINENO - FUNCNAME
 
 # Declarations =)
@@ -140,7 +139,7 @@ function bang.init () {
 				let i++
 			fi
 		elif bang.is_flag? "$arg"; then
-			arg=$(bang_alias2opt "$arg")
+			arg=$(bang.alias2opt "$arg")
 			_BANG_PARSED_FLAGS+=("$arg")
 		else
 			bang.raise_error "Option '$arg' is not a valid option."

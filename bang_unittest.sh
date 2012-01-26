@@ -1,4 +1,5 @@
 #!/bin/bash
+# vim: foldmethod=marker foldmarker={,}
 # Unit Test Framework
 
 _BANG_TESTFUNCS=()
@@ -88,7 +89,7 @@ function bang.assert_equals () {
 	return 0
 }
 
-function bang.mock_do () {
+function bang.mock.do () {
 	if function_exists? "$1" && function_exists? "$2"; then
 		actualFunc=$(declare -f "$1" | sed '1d;2d;$d')
 		func=$(declare -f "$2" | sed '1d;2d;$d')
@@ -100,7 +101,7 @@ function bang.mock_do () {
 	fi
 }
 
-function bang.mock_undo () {
+function bang.mock.undo () {
 	func_name=$(echo $1 | sed 's/\./_/g')
 	if key_exists? "$func_name" "_BANG_MOCKS"; then
 		eval "function $1 () {

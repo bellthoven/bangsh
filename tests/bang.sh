@@ -48,11 +48,69 @@ function bang.test.option_and_flag_aliasing () {
 	bang.add_alias --help -h
 	bang.assert_true $?
 
-	bang.add_alias --test -t
+	bang.add_alias "--test" "-t"
 	bang.assert_true $?
 
 	bang.assert_equals --help $(bang.alias2opt -h)
 	bang.assert_equals --test $(bang.alias2opt -t)
+}
+
+function bang.test.multiple_alias_for_single_option () {
+	bang.add_opt --foo "Foo"
+	bang.add_alias --foo -b
+	bang.add_alias --foo -a
+	bang.add_alias --foo -r
+
+	bang.assert_equals "$(bang.alias2opt -b)" --foo
+	bang.assert_equals "$(bang.alias2opt -a)" --foo
+	bang.assert_equals "$(bang.alias2opt -r)" --foo
+}
+
+function bang.test.required_arg_not_present () {
+	bang.add_flag --foo "\--foo arg"
+	bang.add_alias --foo -f
+	bang.required_args --foo
+
+	# Mocking raise_error
+	bang.mock.do "bang.raise_error" "bang.raise_error_mock"
+
+	# No arguments called
+	bang.init
+	bang.check_required_args
+	test -z "$_ERROR_STRING"
+	bang.assert_false $?
+	echo "$_ERROR_STRING" | grep -q '\--foo'
+	bang.assert_true $?
+
+
+	# Reset error_string
+	_ERROR_STRING=""
+	# Calling with long version!
+	bang.init '--foo'
+	bang.check_required_args 
+	test -z "$_ERROR_STRING"
+	bang.assert_true $?
+
+	# Reset error_string just to be sure =)
+	_ERROR_STRING=""
+	# Calling with short version!
+	bang.init '-f'
+	bang.check_required_args
+	test -z "$_ERROR_STRING"
+	bang.assert_true $?
+
+	# Unmock raise_error
+	bang.mock.undo "bang.raise_error"
+}
+
+function bang.test.in_array () {
+	local foo=('bar')
+	# True!
+	bang.in_array? "bar" "foo"
+	bang.assert_true $?
+	# False!
+	bang.in_array? " bar" "foo"
+	bang.assert_false $?
 }
 
 bang.autorun_tests
