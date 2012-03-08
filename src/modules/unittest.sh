@@ -4,9 +4,13 @@
 
 _BANG_TESTFUNCS=()
 _BANG_TESTDESCS=()
-_BANG_ASSERTIONS_FAILED=0
-_BANG_ASSERTIONS_PASSED=0
-declare -A _BANG_MOCKS=()
+
+# Resets the tests like it had never happened
+function bang.reset_tests {
+	_BANG_ASSERTIONS_FAILED=0
+	_BANG_ASSERTIONS_PASSED=0
+	declare -A _BANG_MOCKS=()
+}
 
 # Adds test cases to be executed
 # @param testcase -- Function with assertions
@@ -20,16 +24,17 @@ function bang.add_test_case () {
 }
 
 # Runs all added test cases
-function bang.run_tests() {
+function bang.run_tests () {
 	local i=0
+	bang.reset_tests
 	echo
 	while [ $i -lt ${#_BANG_TESTFUNCS[@]} ]; do
 		declare -A _BANG_FLAG_ARGS=()
 		declare -A _BANG_ARGS=()
 		declare -A _BANG_ALIASES=()
 		declare -A _BANG_PARSED_ARGS=()
-		_BANG_PARSED_FLAGS=()
-		_BANG_REQUIRED_ARGS=()
+	   _BANG_PARSED_FLAGS=()
+	   _BANG_REQUIRED_ARGS=()
 		echo "Running testcase '${_BANG_TESTFUNCS[$i]}' (${_BANG_TESTDESCS[$i]})"
 		echo
 		${_BANG_TESTFUNCS[$i]}
@@ -47,8 +52,8 @@ function bang.autorun_tests () {
 }
 
 # Asserts a function exit code is zero
-# @param funcname -- Name of the function
-function bang.assert_true () {
+# @param return code -- return code of the command
+function bang.assert_success () {
 	if [ $1 -gt 0 ]; then
 		print_e "'$@'... FAIL"
 		print_e "Expected TRUE, but exit code is NOT 0"
@@ -61,7 +66,7 @@ function bang.assert_true () {
 
 # Asserts a functoin exit code is 1
 # @param funcname -- Name of the function
-function bang.assert_false () {
+function bang.assert_error () {
 	if [ $1 -eq 0 ]; then
 		print_e "'$@'... FAIL"
 		print_e "Expected FALSE, but exit code is 0"
@@ -89,7 +94,10 @@ function bang.assert_equals () {
 	return 0
 }
 
-function bang.mock.do () {
+# Do a double for a function, replacing it codes for the other functions' code
+# @param func1 - a string containing the name of the function to be replaced
+# @param func2 - a string containing the name of the function which will replace func1
+function bang.double.do () {
 	if function_exists? "$1" && function_exists? "$2"; then
 		actualFunc=$(declare -f "$1" | sed '1d;2d;$d')
 		func=$(declare -f "$2" | sed '1d;2d;$d')
@@ -101,7 +109,9 @@ function bang.mock.do () {
 	fi
 }
 
-function bang.mock.undo () {
+# Undo the double for the function
+# @param func - the string containing the name of the function
+function bang.double.undo () {
 	func_name=$(echo $1 | sed 's/\./_/g')
 	if key_exists? "$func_name" "_BANG_MOCKS"; then
 		eval "function $1 () {

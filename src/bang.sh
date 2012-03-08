@@ -2,13 +2,45 @@
 # vim: foldmethod=marker foldmarker={,}
 # BASH_SOURCE - BASH_ARGV - BASH_LINENO - FUNCNAME
 
-# Declarations =)
+_BANG_PATH="$(dirname $(realpath ${BASH_ARGV[0]}))"
 declare -A _BANG_FLAG_ARGS=()
 declare -A _BANG_ARGS=()
 declare -A _BANG_ALIASES=()
 declare -A _BANG_PARSED_ARGS=()
+_BANG_MODULE_DIRS=("$_BANG_PATH/modules" "./modules")
 _BANG_PARSED_FLAGS=()
 _BANG_REQUIRED_ARGS=()
+
+# Source modules found in an directory
+# @params module[, module2, module3, ...]
+function bang.require {
+	while [ ! -z "$1" ]; do
+		mod_path="$(bang.resolve_module_path "$1")"
+		if [ ! -z "$mod_path" ]; then
+			source "$mod_path"
+		else
+			bang.raise_error "Module '$1' not found."
+		fi
+		shift
+	done
+}
+
+# Return whether the argument is a valid module
+# @params module - the name of the module
+function bang.is_module? {
+	bang.resolve_module_path "$1"
+	return $?
+}
+
+# Resolves a module name for its path
+# @param module - the name of the module
+function bang.resolve_module_path {
+	for path in $_BANG_MODULE_DIRS; do
+		path=$(realpath "$path")
+		[ -x "$path/$1.sh" ] && echo "$path/$1.sh" && return 0
+	done
+	return 1
+}
 
 # Adds an option with a description to the software
 # @params opt - Option to be added
