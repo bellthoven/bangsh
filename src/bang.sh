@@ -4,20 +4,6 @@
 _BANG_PATH="$(dirname $(realpath ${BASH_ARGV[0]}))"
 _BANG_MODULE_DIRS=("$_BANG_PATH/modules" "./modules")
 
-# Source modules found in an directory
-# @param module[, module2, module3, ...]
-function require_module () {
-	while [ ! -z "$1" ]; do
-		mod_path="$(b.resolve_module_path "$1")"
-		if [ ! -z "$mod_path" ]; then
-			source "$mod_path"
-		else
-			b.raise_error "Module '$1' not found."
-		fi
-		shift
-	done
-}
-
 # Return whether the argument is a valid module
 # @param module - the name of the module
 function is_module? () {
@@ -76,8 +62,16 @@ function escape_arg () {
 function sanitize_arg () {
 	local arg="$1"
 	[ -z "$arg" ] && read arg
-	arg=$(echo "$arg" | sed 's/[;&]//g ; s/^\s\+\|\s\+$//g')
+	arg=$(echo "$arg" | sed 's/[;&]//g' | trim)
 	echo "$arg"
+}
+
+# Trims a string
+# @param string - string to be trimmed
+function trim () {
+	local arg="$*"
+	[ -z "$arg" ] && read arg
+	echo "$arg" | sed 's/^\s\+\|\s\+$//g'
 }
 
 # Checks if a function exists

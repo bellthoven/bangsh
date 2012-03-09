@@ -40,6 +40,13 @@ function b.test.function_existance () {
 	b.unittest.assert_error $(function_exists? testthisfunction ; echo $?)
 }
 
+function b.test.trim () {
+	b.unittest.assert_equals "left trim" $(trim " left trim")
+	b.unittest.assert_equals "right trim" $(trim "right trim ")
+	b.unittest.assert_equals "both trim" $(trim " both trim ")
+	b.unittest.assert_equals "no trim" $(trim "no trim")
+}
+
 b.unittest.add_test_case b.test.in_array "Test in_array function"
 b.unittest.add_test_case b.test.key_exists "Test key_exists function"
 b.unittest.add_test_case b.test.escape_arg "Test escape_arg function"
