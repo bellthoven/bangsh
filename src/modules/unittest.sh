@@ -71,7 +71,7 @@ function b.unittest.assert_error () {
 # Asserts a function output is the same as required
 # @param reqvalue -- Value to be equals to the output
 # @param funcname -- Name of the function which result is to be tested
-function b.unittest.assert_equals () {
+function b.unittest.assert_equal () {
 	local val="$1"
 	shift
 	local result="$1"

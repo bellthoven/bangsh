@@ -74,7 +74,7 @@ function escape_arg () {
 # @param arg - Argument to be sinitized
 function sanitize_arg () {
 	local arg="$1"
-	arg=$(echo "$arg" | sed 's/[;& ]//g')
+	arg=$(echo "$arg" | sed 's/[;&]//g ; s/^\s\+\|\s\+$//g')
 	echo "$arg"
 }
 

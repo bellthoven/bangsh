@@ -54,8 +54,8 @@ function b.test.option_and_flag_aliasing () {
 	b.opt.add_alias "--test" "-t"
 	b.unittest.assert_success $?
 
-	b.unittest.assert_equals --help $(b.opt.alias2opt -h)
-	b.unittest.assert_equals --test $(b.opt.alias2opt -t)
+	b.unittest.assert_equal --help $(b.opt.alias2opt -h)
+	b.unittest.assert_equal --test $(b.opt.alias2opt -t)
 }
 
 function b.test.multiple_alias_for_single_option () {
@@ -64,9 +64,9 @@ function b.test.multiple_alias_for_single_option () {
 	b.opt.add_alias --foo -a
 	b.opt.add_alias --foo -r
 
-	b.unittest.assert_equals "$(b.opt.alias2opt -b)" --foo
-	b.unittest.assert_equals "$(b.opt.alias2opt -a)" --foo
-	b.unittest.assert_equals "$(b.opt.alias2opt -r)" --foo
+	b.unittest.assert_equal "$(b.opt.alias2opt -b)" --foo
+	b.unittest.assert_equal "$(b.opt.alias2opt -a)" --foo
+	b.unittest.assert_equal "$(b.opt.alias2opt -r)" --foo
 }
 
 function b.test.required_arg_not_present () {
