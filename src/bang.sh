@@ -64,6 +64,7 @@ function key_exists? () {
 # @param arg - Argument to be escaped
 function escape_arg () {
 	local arg="$@"
+	[ -z "$arg" ] && read arg
 	if [ "${arg:0:1}" == '-' ]; then
 		arg="\\$arg"
 	fi
@@ -74,6 +75,7 @@ function escape_arg () {
 # @param arg - Argument to be sinitized
 function sanitize_arg () {
 	local arg="$1"
+	[ -z "$arg" ] && read arg
 	arg=$(echo "$arg" | sed 's/[;&]//g ; s/^\s\+\|\s\+$//g')
 	echo "$arg"
 }
