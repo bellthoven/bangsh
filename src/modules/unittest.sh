@@ -110,5 +110,3 @@ function b.unittest.double.undo () {
 		}"
 	fi
 }
-
-export -f b.unittest.autorun_tests

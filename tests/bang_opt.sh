@@ -105,3 +105,9 @@ function b.test.required_arg_not_present () {
 	# Undo double raise_error
 	b.unittest.double.undo "b.raise_error"
 }
+
+b.unittest.add_test_case b.test.if_options_exists "Test b.opt options"
+b.unittest.add_test_case b.test.if_flag_exists "Test b.opt flags"
+b.unittest.add_test_case b.test.option_and_flag_aliasing "Test both, option and flag aliasing"
+b.unittest.add_test_case b.test.multiple_alias_for_single_option "Test multiple aliases for the same optino"
+b.unittest.add_test_case b.test.required_arg_not_present "Test behavior for required args"
