@@ -3,12 +3,29 @@
 
 _BANG_PATH="$(dirname $(realpath ${BASH_ARGV[0]}))"
 _BANG_MODULE_DIRS=("$_BANG_PATH/modules" "./modules")
+_BANG_RAISED_EXCEPTION=""
+_BANG_DEFAULT_CATCH=""
+declare -A _BANG_CATCHED_EXCEPTIONS=()
 
 # Return whether the argument is a valid module
 # @param module - the name of the module
 function is_module? () {
 	resolve_module_path "$1" &>/dev/null
 	return $?
+}
+
+# Adds a directory to the end of the module lookup array of directories
+# @param dirname - the path for the desired directory
+function append_module_dir () {
+	[ -z "$1" ] && return 1
+	_BANG_MODULE_DIRS+=("$1")
+}
+
+# Adds a directory to the beginning of the module lookup of directories
+# @param dirname - the path for the desired directory
+function prepend_module_dir () {
+	[ -z "$1" ] && return 1
+	_BANG_MODULE_DIRS=("$1" "${_BANG_MODULE_DIRS}")
 }
 
 # Resolves a module name for its path
@@ -76,7 +93,7 @@ function trim () {
 
 # Checks if a function exists
 # @param funcname -- Name of function to be checked
-function function_exists? () {
+function is_function? () {
 	declare -f "$1" &>/dev/null && return 0
 	return 1
 }
@@ -92,4 +109,42 @@ function print_e () {
 function b.raise_error () {
 	print_e "The program was aborted due an error:\n\n\t$*"
 	exit 2
+}
+
+# Raises an exception that can be cautch by catch statement
+# @param exception - a string containing the name of the exception
+function b.raise () {
+	echo "${FUNCNAME[@]}" | grep -q 'b.try.do' && \
+		_BANG_RAISED_EXCEPTION="$1" && return 0
+	b.raise_error "Uncautch exception $1"
+}
+
+# Simple implementation of the try statement which exists in other languages
+# @param funcname - a string containing the name of the function that can raises an exception
+function b.try.do () {
+	is_function? "$1" && "$1"
+}
+
+# Catches an exception fired by b.raise and executes a function
+# @param exception - a string containing the exception fired by b.raise
+# @param funcname - a string containing the name of the function to handle exception
+function b.catch () {
+	if [ "$_BANG_RAISED_EXCEPTION" = "$1" ]; then
+		is_function? "$2" && "$2"
+	elif [ -z "$1" ]; then
+		is_function? "$2" && "$2"
+	fi
+}
+
+# Executes this command whether an exception is called or not
+# @param funcname - a string containing the name of the function to be executed
+function b.finally () {
+	_BANG_FINALLY_FUNCTION="$1"
+}
+
+# End a try/catch statement
+function b.try.end () {
+	$_BANG_FINALLY_FUNCTION
+	_BANG_RAISED_EXCEPTION=""
+	_BANG_FINALLY_FUNCTION=""
 }

@@ -35,9 +35,9 @@ function b.test.sanitize_arg () {
 
 function b.test.function_existance () {
 	function testthisfunction () { echo &> /dev/null ; }
-	b.unittest.assert_success $(function_exists? testthisfunction ; echo $?)
+	b.unittest.assert_success $(is_function? testthisfunction ; echo $?)
 	unset -f testthisfunction
-	b.unittest.assert_error $(function_exists? testthisfunction ; echo $?)
+	b.unittest.assert_error $(is_function? testthisfunction ; echo $?)
 }
 
 function b.test.trim () {
@@ -47,8 +47,62 @@ function b.test.trim () {
 	b.unittest.assert_equals "no trim" $(trim "no trim")
 }
 
+function b.test.simple_try_catch () {
+	local catch_executed=0
+	function command () { b.raise ExceptionName ; }
+	function catchblock () { catch_executed=1 ; }
+	b.try.do command
+	b.catch ExceptionName catchblock
+	b.try.end
+
+	b.unittest.assert_equal 1 "$catch_executed"
+	unset -f command
+	unset -f catchblock
+}
+
+function b.test.multiple_catches_for_a_try () {
+	local catched_executed=0 will_be_zero=0
+	function command () { b.raise Exception2Name ; }
+	function catchblock () { catched_executed=1 ; }
+	function will_never_be_executed () { will_be_zero=1 ; }
+	b.try.do command
+	b.catch ExceptionName will_never_be_executed
+	b.catch Exception2Name catchblock
+	b.try.end
+
+	b.unittest.assert_equal 1 $catched_executed
+	b.unittest.assert_equal 0 $will_be_zero
+
+	unset -f command
+	unset -f catchblock
+	unset -f will_never_be_executed
+}
+
+function b.test.finally_is_called_when_exception_is_not_raised () {
+	local catched_executed=0 will_be_zero=1
+	function command () { echo "dump" &> /dev/null ; }
+	function catchblock () { catched_executed=1 ; }
+	function will_be_zero () { will_be_zero=0 ; }
+
+	b.try.do command
+	b.catch ExceptionName catchblock
+	b.finally will_be_zero
+	b.try.end
+
+	b.unittest.assert_equal 0 $catched_executed
+	b.unittest.assert_equal 0 $will_be_zero
+
+	unset -f command
+	unset -f catchblock
+	unset -f will_be_zero
+}
+
 b.unittest.add_test_case b.test.in_array "Test in_array function"
 b.unittest.add_test_case b.test.key_exists "Test key_exists function"
 b.unittest.add_test_case b.test.escape_arg "Test escape_arg function"
 b.unittest.add_test_case b.test.sanitize_arg "Test sanitize_arg function"
-b.unittest.add_test_case b.test.function_existance "Test function_exists function"
+b.unittest.add_test_case b.test.function_existance "Test is_function function"
+b.unittest.add_test_case b.test.simple_try_catch "Test a simple try and catch"
+b.unittest.add_test_case b.test.multiple_catches_for_a_try "Test multiples catches for a try statement"
+b.unittest.add_test_case b.test.finally_is_called_when_exception_is_raised "Finally is called when exception is raised"
+b.unittest.add_test_case b.test.finally_is_called_when_exception_is_not_raised "Finally is called when exception is not raised"

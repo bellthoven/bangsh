@@ -11,7 +11,7 @@ _BANG_ASSERTIONS_PASSED=0
 # @param testcase -- Function with assertions
 # @param description -- Description of the testcase
 function b.unittest.add_test_case () {
-	if function_exists? "$1"; then
+	if is_function? "$1"; then
 		_BANG_TESTFUNCS+=($1)
 		shift
 		_BANG_TESTDESCS+=("$@")
@@ -24,12 +24,12 @@ function b.unittest.run_tests () {
 	#b.unittest.reset_tests
 	echo
 	while [ $i -lt ${#_BANG_TESTFUNCS[@]} ]; do
-		function_exists? b.unittest.setup && b.unittest.setup
+		is_function? b.unittest.setup && b.unittest.setup
 		echo "Running testcase '${_BANG_TESTFUNCS[$i]}' (${_BANG_TESTDESCS[$i]})"
 		echo
 		${_BANG_TESTFUNCS[$i]}
 		let i++
-		function_exists? b.unittest.teardown && b.unittest.teardown
+		is_function? b.unittest.teardown && b.unittest.teardown
 	done
 	echo "$i tests executed (Assertions: $_BANG_ASSERTIONS_PASSED passed / $_BANG_ASSERTIONS_FAILED failed)"
 }
@@ -89,7 +89,7 @@ function b.unittest.assert_equal () {
 # @param func1 - a string containing the name of the function to be replaced
 # @param func2 - a string containing the name of the function which will replace func1
 function b.unittest.double.do () {
-	if function_exists? "$1" && function_exists? "$2"; then
+	if is_function? "$1" && is_function? "$2"; then
 		actualFunc=$(declare -f "$1" | sed '1d;2d;$d')
 		func=$(declare -f "$2" | sed '1d;2d;$d')
 		func_name=$(echo $1 | sed 's/\./_/g')
