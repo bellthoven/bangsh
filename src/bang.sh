@@ -33,7 +33,7 @@ function prepend_module_dir () {
 function resolve_module_path () {
 	for path in $_BANG_MODULE_DIRS; do
 		path=$(realpath "$path")
-		[ -x "$path/$1.sh" ] && echo "$path/$1.sh" && return 0
+		[ -r "$path/$1.sh" ] && echo "$path/$1.sh" && return 0
 	done
 	return 1
 }
