@@ -2,7 +2,7 @@
 # BASH_SOURCE - BASH_ARGV - BASH_LINENO - FUNCNAME
 
 _BANG_PATH="$(dirname $(realpath ${BASH_ARGV[0]}))"
-_BANG_MODULE_DIRS=("$_BANG_PATH/modules" "./modules")
+_BANG_MODULE_DIRS=("./modules" "$_BANG_PATH/modules")
 _BANG_RAISED_EXCEPTION=""
 _BANG_DEFAULT_CATCH=""
 declare -A _BANG_CATCHED_EXCEPTIONS=()
@@ -25,13 +25,13 @@ function append_module_dir () {
 # @param dirname - the path for the desired directory
 function prepend_module_dir () {
 	[ -z "$1" ] && return 1
-	_BANG_MODULE_DIRS=("$1" "${_BANG_MODULE_DIRS}")
+	_BANG_MODULE_DIRS=("$1" "${_BANG_MODULE_DIRS[@]}")
 }
 
 # Resolves a module name for its path
 # @param module - the name of the module
 function resolve_module_path () {
-	for path in $_BANG_MODULE_DIRS; do
+	for path in "${_BANG_MODULE_DIRS[@]}"; do
 		path=$(realpath "$path")
 		[ -r "$path/$1.sh" ] && echo "$path/$1.sh" && return 0
 	done
