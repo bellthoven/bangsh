@@ -1,15 +1,10 @@
 #!/bin/bash
 
-source $(resolve_module_path "opt")
-
-_ERROR_STRING=""
-function bang_raise_error_double () {
-	local errormsg="$1"
-	_ERROR_STRING="$errormsg"
-}
+#source $(resolve_module_path "opt")
+require_module "opt"
 
 function b.unittest.teardown {
-	b.opt
+	b.opt.reset
 }
 
 function b.test.if_options_exists () {
@@ -74,36 +69,51 @@ function b.test.required_arg_not_present () {
 	b.opt.add_alias --foo -f
 	b.opt.required_args --foo
 
-	# Double raise_error
-	b.unittest.double.do "b.raise_error" "bang_raise_error_double"
-
 	# No arguments called
 	b.opt.init
-	b.opt.check_required_args
-	test -z "$_ERROR_STRING"
-	b.unittest.assert_error $?
-	echo "$_ERROR_STRING" | grep -q '\--foo'
-	b.unittest.assert_success $?
+	b.unittest.assert_raise b.opt.check_required_args RequiredOptionNotSet
+}
 
+function b.test.required_arg_called_with_long_args () {
+	b.opt.add_flag --foo "\--foo arg"
+	b.opt.add_alias --foo -f
+	b.opt.required_args --foo
 
-	# Reset error_string
-	_ERROR_STRING=""
-	# Calling with long version!
+	## Calling with long version!
 	b.opt.init --foo
 	b.opt.check_required_args 
-	test -z "$_ERROR_STRING"
 	b.unittest.assert_success $?
+}
 
-	# Reset error_string just to be sure =)
-	_ERROR_STRING=""
-	# Calling with short version!
+function b.test.required_arg_called_with_short_args () {
+	b.opt.add_flag --foo "\--foo arg"
+	b.opt.add_alias --foo -f
+	b.opt.required_args --foo
+
+	## Calling with short version!
 	b.opt.init '-f'
 	b.opt.check_required_args
-	test -z "$_ERROR_STRING"
 	b.unittest.assert_success $?
+}
 
-	# Undo double raise_error
-	b.unittest.double.undo "b.raise_error"
+function b.test.has_flag_set () {
+	b.opt.add_flag --foo "foo"
+	b.opt.init --foo
+	b.opt.has_flag? --foo
+	b.unittest.assert_success $?
+}
+
+function b.test.has_not_flag_set () {
+	b.opt.add_flag --foo "foo"
+	b.opt.init
+	b.opt.has_flag? --foo
+	b.unittest.assert_error $?
+}
+
+function b.test.get_opt () {
+	b.opt.add_opt --foo "Foo is an option"
+	b.opt.init --foo "bar"
+	b.unittest.assert_equal "bar" $(b.opt.get_opt --foo)
 }
 
 b.unittest.add_test_case b.test.if_options_exists "Test b.opt options"
@@ -111,3 +121,8 @@ b.unittest.add_test_case b.test.if_flag_exists "Test b.opt flags"
 b.unittest.add_test_case b.test.option_and_flag_aliasing "Test both, option and flag aliasing"
 b.unittest.add_test_case b.test.multiple_alias_for_single_option "Test multiple aliases for the same optino"
 b.unittest.add_test_case b.test.required_arg_not_present "Test behavior for required args"
+b.unittest.add_test_case b.test.required_arg_called_with_long_args "Test behavior for required args"
+b.unittest.add_test_case b.test.required_arg_called_with_short_args "Test behavior for required args"
+b.unittest.add_test_case b.test.has_flag_set "Test whether has_flag? returns the right exit code"
+b.unittest.add_test_case b.test.has_not_flag_set "Test whether has_flag? returns the right exit code"
+b.unittest.add_test_case b.test.get_opt "Test whether get_opt works"

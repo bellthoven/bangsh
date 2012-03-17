@@ -85,9 +85,27 @@ function b.unittest.assert_equal () {
 	return 0
 }
 
+# Asserts a function will raise a given exception
+# @param funcname -- a string containing the name of the function which will raise an exception
+# @param exception -- a string containing the exception which should be raise
+function b.unittest.assert_raise () {
+	local fired=0
+	function catch_exception () { fired=1 ; }
+	b.try.do "$1"
+	b.catch "$2" catch_exception
+	b.try.end
+	if [ $fired -eq 1 ]; then
+		let _BANG_ASSERTIONS_PASSED++
+	else
+		let _BANG_ASSERTIONS_FAILED++
+		print_e "'$1' has not raised '$2' as expected..."
+	fi
+	unset -f catch_exception
+}
+
 # Do a double for a function, replacing it codes for the other functions' code
-# @param func1 - a string containing the name of the function to be replaced
-# @param func2 - a string containing the name of the function which will replace func1
+# @param func1 -- a string containing the name of the function to be replaced
+# @param func2 -- a string containing the name of the function which will replace func1
 function b.unittest.double.do () {
 	if is_function? "$1" && is_function? "$2"; then
 		actualFunc=$(declare -f "$1" | sed '1d;2d;$d')
