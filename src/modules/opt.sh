@@ -149,7 +149,7 @@ function b.opt.init () {
 			local ii=$(($i + 1))
 			local nextArg=$(eval "echo \$$ii")
 			if [ -z "$nextArg" ] || b.opt.is_opt? "$nextArg" || b.opt.is_flag? "$nextArg"; then
-				b.raise_error "Option '$arg' requires an argument."
+				b.raise ArgumentError "Option '$arg' requires an argument."
 			else
 				b.set "Bang.Opt.ParsedArg.$arg" "$nextArg"
 				let i++
@@ -157,7 +157,7 @@ function b.opt.init () {
 		elif b.opt.is_flag? "$arg"; then
 			b.set "Bang.Opt.ParsedFlag" "$(b.get Bang.Opt.ParsedFlag) $arg"
 		else
-			b.raise_error "Option '$arg' is not a valid option."
+			b.raise ArgumentError "Option '$arg' is not a valid option."
 		fi
 	done
 }
