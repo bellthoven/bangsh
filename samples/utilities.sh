@@ -13,6 +13,6 @@ declare -A TEST_HASH=(["foo"]="bar")
 key_exists? "foo" TEST_HASH && echo "${TEST_HASH['foo']}"
 
 function foo () {
-	echo 'it is a func'
+  echo 'it is a func'
 }
 is_function? foo && foo

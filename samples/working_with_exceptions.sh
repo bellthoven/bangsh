@@ -9,35 +9,35 @@ source "$BANG_DIR/bang.sh"
 ### Functions ###
 
 function file_not_found () {
-	echo "File was not found."
+  echo "File was not found."
 }
 
 function file_already_exists () {
-	echo "File already exists."
+  echo "File already exists."
 }
 
 function it_is_a_directory () {
-	echo "It was a directory."
+  echo "It was a directory."
 }
 
 function i_dont_know_what_it_is () {
-	echo "I don't know what it is."
+  echo "I don't know what it is."
 }
 
 function try_again () {
-	echo "Try Again"
+  echo "Try Again"
 }
 
 function run () {
-	if [ ! -e "$1" ]; then
-		b.raise FileNotFoundException
-	elif [ -f "$1" ]; then
-		b.raise FileAlreadyExistsException
-	elif [ -d "$1" ]; then
-		b.raise ItIsADirectoryException
-	else
-		b.raise IDontKnowException
-	fi
+  if [ ! -e "$1" ]; then
+    b.raise FileNotFoundException
+  elif [ -f "$1" ]; then
+    b.raise FileAlreadyExistsException
+  elif [ -d "$1" ]; then
+    b.raise ItIsADirectoryException
+  else
+    b.raise IDontKnowException
+  fi
 }
 
 ### Run ! ###
