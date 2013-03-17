@@ -1,8 +1,18 @@
 #!/bin/bash
 # BASH_SOURCE - BASH_ARGV - BASH_LINENO - FUNCNAME
 
-_BANG_PATH="$(dirname $(realpath ${BASH_ARGV[0]}))"
+if [ ${#BASH_ARGV[@]} -eq 0 ]; then
+  echo "bang.sh should be sourced, not executed directly"
+  exit 2
+fi
+
+_BANG_PATH=$( ( (
+  _BANG_DIR="${BASH_ARGV[0]%bang.sh}"
+  cd -P "$_BANG_DIR"
+  echo "$PWD"
+) ) )
 _BANG_MODULE_DIRS=("./modules" "$_BANG_PATH/modules")
+
 declare -A _BANG_REGISTRY=()
 
 ## Sets a globally scoped variable using Registry Pattern
@@ -74,7 +84,6 @@ function prepend_module_dir () {
 ## @param module - the name of the module
 function resolve_module_path () {
   for path in "${_BANG_MODULE_DIRS[@]}"; do
-    path=$(realpath "$path")
     [ -r "$path/$1.sh" ] && echo "$path/$1.sh" && return 0
   done
   return 1
