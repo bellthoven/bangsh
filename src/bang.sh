@@ -134,12 +134,12 @@ function sanitize_arg () {
   echo "$arg"
 }
 
-## Trims a string
+## Trims spaces and tabs from the beginning and at the end string
 ## @param string - string to be trimmed
 function trim () {
   local arg="$*"
   [ -z "$arg" ] && read arg
-  echo "$arg" | sed 's/^\s\+\|\s\+$//g'
+  echo "$arg" | sed -E 's/^[ \t]*//g ; s/[ \t]*$//g'
 }
 
 ## Checks if a function exists

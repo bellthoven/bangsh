@@ -1,7 +1,5 @@
 #!/bin/bash
 
-source '../src/bang.sh'
-require_module unittest
 require_module path
 
 function b.test.path_dir () {
@@ -36,5 +34,3 @@ function b.test.path_expand () {
 
   unlink "${dir}2"
 }
-
-b.unittest.autorun_tests
