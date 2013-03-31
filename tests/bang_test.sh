@@ -17,7 +17,7 @@ function b.test.key_exists () {
   b.unittest.assert_error $(key_exists? "invalid" "foo" ; echo $?)
 }
 
-function b.test,escape_arg () {
+function b.test.escape_arg () {
   b.unittest.assert_equal "\\--foo" $(escape_arg --foo)
   b.unittest.assert_equal "\\--foo" $(echo --foo | escape_arg)
   b.unittest.assert_equal '"--foo"' $(escape_arg "\"--foo\"")
@@ -38,13 +38,6 @@ function b.test.function_existance () {
   b.unittest.assert_success $(is_function? testthisfunction ; echo $?)
   unset -f testthisfunction
   b.unittest.assert_error $(is_function? testthisfunction ; echo $?)
-}
-
-function b.test.trim () {
-  b.unittest.assert_equal "left trim" "$(trim ' left trim')"
-  b.unittest.assert_equal "right trim" "$(trim 'right trim ')"
-  b.unittest.assert_equal "both trim" "$(trim ' both trim ')"
-  b.unittest.assert_equal "no trim" "$(trim 'no trim')"
 }
 
 function b.test.simple_try_catch () {
@@ -96,13 +89,3 @@ function b.test.finally_is_called_when_exception_is_not_raised () {
   unset -f catchblock
   unset -f will_be_zero
 }
-
-b.unittest.add_test_case b.test.in_array "Test in_array function"
-b.unittest.add_test_case b.test.key_exists "Test key_exists function"
-b.unittest.add_test_case b.test.escape_arg "Test escape_arg function"
-b.unittest.add_test_case b.test.sanitize_arg "Test sanitize_arg function"
-b.unittest.add_test_case b.test.function_existance "Test is_function function"
-b.unittest.add_test_case b.test.simple_try_catch "Test a simple try and catch"
-b.unittest.add_test_case b.test.multiple_catches_for_a_try "Test multiples catches for a try statement"
-b.unittest.add_test_case b.test.finally_is_called_when_exception_is_raised "Finally is called when exception is raised"
-b.unittest.add_test_case b.test.finally_is_called_when_exception_is_not_raised "Finally is called when exception is not raised"
