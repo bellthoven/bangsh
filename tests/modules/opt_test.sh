@@ -1,6 +1,6 @@
 #!/bin/bash
 
-require_module opt
+b.module.require opt
 
 function b.unittest.teardown {
   b.opt.reset

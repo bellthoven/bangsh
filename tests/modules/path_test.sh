@@ -1,6 +1,6 @@
 #!/bin/bash
 
-require_module path
+b.module.require path
 
 function b.test.path_dir () {
   local tempdir=$(mktemp -d -t testing)

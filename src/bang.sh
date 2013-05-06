@@ -11,9 +11,9 @@ _BANG_PATH=$( ( (
   cd -P "$_BANG_DIR"
   echo "$PWD"
 ) ) )
-_BANG_MODULE_DIRS=("./modules" "$_BANG_PATH/modules")
-
 declare -A _BANG_REGISTRY=()
+
+source "${_BANG_PATH}/modules/module.sh"
 
 ## Sets a globally scoped variable using Registry Pattern
 ## @param varname - the name of the variable
@@ -52,41 +52,8 @@ function b.unset () {
 ## Return whether the argument is a valid module
 ## @param module - the name of the module
 function is_module? () {
-  resolve_module_path "$1" &>/dev/null
+  b.module.resolve_path "$1" &>/dev/null
   return $?
-}
-
-## Includes a module file
-## @param module - the name of the module
-function require_module () {
-  if is_module? "$1"; then
-    source "$(resolve_module_path $1)"
-    return 0
-  fi
-  b.raise ModuleNotFound
-}
-
-## Adds a directory to the end of the module lookup array of directories
-## @param dirname - the path for the desired directory
-function append_module_dir () {
-  [ -z "$1" ] && return 1
-  _BANG_MODULE_DIRS+=("$1")
-}
-
-## Adds a directory to the beginning of the module lookup of directories
-## @param dirname - the path for the desired directory
-function prepend_module_dir () {
-  [ -z "$1" ] && return 1
-  _BANG_MODULE_DIRS=("$1" "${_BANG_MODULE_DIRS[@]}")
-}
-
-## Resolves a module name for its path
-## @param module - the name of the module
-function resolve_module_path () {
-  for path in "${_BANG_MODULE_DIRS[@]}"; do
-    [ -r "$path/$1.sh" ] && echo "$path/$1.sh" && return 0
-  done
-  return 1
 }
 
 ## Checks if the element is in the given array name

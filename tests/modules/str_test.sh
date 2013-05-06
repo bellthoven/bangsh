@@ -1,6 +1,6 @@
 #!/bin/bash
 
-require_module "str"
+b.module.require str
 
 function b.test.str_replace () {
   local foo="Testing"
