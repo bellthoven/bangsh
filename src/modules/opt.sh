@@ -47,6 +47,7 @@ function b.opt.add_flag () {
 ## @param [aliases ...] - Aliases of the option
 function b.opt.add_alias () {
   local opt="$1" total="$#"
+  shift
   if [ ! -z "$opt" ] && [ $total -gt 1 ]; then
     local sum=0
     b.opt.is_opt? "$(b.opt.alias2opt $opt)" && sum=$(($sum + 1))
@@ -54,15 +55,25 @@ function b.opt.add_alias () {
     # option not found
     [ $sum -ne 1 ] && b.raise OptionDoesNotExist "Option '$opt' does not exist, no alias can be added."
     # option found
-    local i=""
-    for i in $(seq 2 $total); do
-      local alias=$(eval "echo Bang.Opt.Alias.\$$i")
+    local i=1
+    while [ $i -lt $total ]; do
+      local alias="Bang.Opt.Alias.$1"
+      shift
       b.set "$alias" "$opt"
       b.set "Bang.Opt.AliasFor.$opt" "$alias $(b.get Bang.Opt.AliasFor.$opt)"
+      let i++
     done
     return 0
   fi
   return 1
+}
+
+function b.opt.aliases_for () {
+  local opt=$1 aliases=()
+  for aliasname in $(b.get "Bang.Opt.AliasFor.$opt"); do
+    aliases+=("${aliasname#Bang.Opt.Alias.}")
+  done
+  echo "${aliases[@]}"
 }
 
 ## Sets the required args of the command line
@@ -87,7 +98,6 @@ function b.opt.required_args () {
 function b.opt.has_flag? () {
   local reqopt="$(b.opt.alias2opt $1)"
   echo $(b.get "Bang.Opt.ParsedFlag") | grep -q "^$reqopt\b\| $reqopt\b"
-  return $?
 }
 
 ## Returns the value of the option
@@ -99,12 +109,12 @@ function b.opt.get_opt () {
 }
 
 ## Shows usage informations
-function b.opt.show_usage() {
-  echo -e "\nShowing script usage:\n"
+function b.opt.show_usage () {
+  echo -e "\nShowing usage:\n"
   local opt=""
   for opt in $(b.get "Bang.Opt.AllOpts"); do
     local fullopt="$opt" alias=""
-    for aliasname in $(b.get "Bang.Opt.AliasFor.$opt"); do
+    for aliasname in $(b.opt.aliases_for $opt); do
       fullopt="$fullopt|$aliasname"
     done
     b.opt.is_opt? "$opt" && fullopt="$fullopt <value>\t\t"
@@ -115,28 +125,6 @@ function b.opt.show_usage() {
     [ ! -z "$desc" ] && fullopt="$fullopt\n\t\t$desc\n"
     echo -e "$fullopt"
   done
-  #echo "Options:"
-  #for opt in "${!_BANG_ARGS[@]}"; do
-  #  local fullopt="$opt" alias=""
-  #  for alias in "${!_BANG_ALIASES[@]}"; do
-  #    test "$opt" = "${_BANG_ALIASES[$alias]}" && fullopt="$fullopt|$alias"
-  #  done
-  #  local req=" "
-  #  in_array? "$opt" "_BANG_REQUIRED_ARGS" && req="(Required) "
-  #  echo -e "$fullopt <value>\t\t$req${_BANG_ARGS[$opt]}"
-  #done
-  #echo "Flags:"
-  #opt=""
-  #for opt in "${!_BANG_FLAG_ARGS[@]}"; do
-  #  local fullopt="$opt" alias=""
-  #  for alias in "${!_BANG_ALIASES[@]}"; do
-  #    test "$opt" = "${_BANG_ALIASES[$alias]}" && fullopt="$fullopt|$alias"
-  #  done
-  #  local req=" "
-  #  in_array? "$opt" "_BANG_REQUIRED_ARGS" && req="(Required) "
-  #  echo -e "$fullopt \t\t$req${_BANG_FLAG_ARGS[$opt]}"
-  #done
-  exit 0
 }
 
 ## Parses the arguments of command line
@@ -164,12 +152,17 @@ function b.opt.init () {
 
 ## Checks for required args... if some is missing, raises an error
 function b.opt.check_required_args() {
-  local reqopt=""
-  for reqopt in $(b.get Bang.Opt.Required); do
+  local reqopt="" required_options="$(b.get Bang.Opt.Required)"
+
+  [ -z "$required_options" ] && return 0
+  for reqopt in $required_options; do
     is_opt=$(b.is_set? "Bang.Opt.ParsedArg.$reqopt" ; echo $?)
     is_alias=$(b.opt.has_flag? "$reqopt" ; echo $?)
     sum=$(($is_opt + $is_alias))
-    [ $sum -gt 1 ] && b.raise RequiredOptionNotSet "Option '$reqopt' is required and was not specified"
+    if [ $sum -gt 1 ]; then
+      b.raise RequiredOptionNotSet "Option '$reqopt' is required and was not specified"
+      return 1
+    fi
   done
   return 0
 }
