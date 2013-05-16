@@ -1,18 +1,15 @@
 #!/bin/bash
 
-SCRIPT_PATH=$(realpath $0)
-SCRIPT_DIR=$(dirname "$SCRIPT_PATH")
-BANG_DIR=$(realpath "$SCRIPT_DIR/../src/")
+BANG_DIR="${0%`basename $0`}/../src"
 
 source "$BANG_DIR/bang.sh"
-require_module opt
+b.module.require opt
 
 ### Functions ###
 
 function load_options () {
   # Help (--help and -h added as flags)
-  b.opt.add_flag --help "Show usage notes"
-  b.opt.add_alias --help -h
+  b.opt.add_flag --stderr "Prints to stdeer"
 
   # text (--text and -t added as options)
   b.opt.add_opt --text "Specify text to be printed"
@@ -22,20 +19,20 @@ function load_options () {
   b.opt.required_args --text
 }
 
-function run() {
+function run () {
   load_options
   b.opt.init "$@"
-  if b.opt.has_flag? -h; then
-    b.opt.show_usage
-  else
-    b.opt.check_required_args
+  if b.opt.check_required_args; then
     local text="$(b.opt.get_opt --text)"
-    echo "$text"
+    if b.opt.has_flag? --stderr; then
+      echo "$text" 1>&2
+    else
+      echo "$text"
+    fi
   fi
 }
 
 # Run!
 b.try.do run "$@"
-b.catch ArgumentError b.opt.show_usage
 b.catch RequiredOptionNotSet b.opt.show_usage
 b.try.end
