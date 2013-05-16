@@ -1,5 +1,5 @@
 #!/bin/bash
-# Unit Test Framework
+## Unit Test Framework
 
 declare -A _BANG_MOCKS=()
 _BANG_TESTFUNCS=()
@@ -7,9 +7,9 @@ _BANG_TESTDESCS=()
 _BANG_ASSERTIONS_FAILED=0
 _BANG_ASSERTIONS_PASSED=0
 
-# Adds test cases to be executed
-# @param testcase -- Function with assertions
-# @param description -- Description of the testcase
+## Adds test cases to be executed
+## @param testcase - Function with assertions
+## @param description - Description of the testcase
 function b.unittest.add_test_case () {
   if is_function? "$1"; then
     _BANG_TESTFUNCS+=($1)
@@ -18,7 +18,7 @@ function b.unittest.add_test_case () {
   fi
 }
 
-# Runs all added test cases
+## Runs all added test cases
 function b.unittest.run_tests () {
   local i=0
   #b.unittest.reset_tests
@@ -34,7 +34,7 @@ function b.unittest.run_tests () {
   echo "$i tests executed (Assertions: $_BANG_ASSERTIONS_PASSED passed / $_BANG_ASSERTIONS_FAILED failed)"
 }
 
-# Autoadd and run all test functions
+## Autoadd and run all test functions
 function b.unittest.autorun_tests () {
   for func in $(declare -f | grep '^b\.test\.' | sed 's/ ().*$//'); do
     b.unittest.add_test_case "$func"
@@ -42,8 +42,8 @@ function b.unittest.autorun_tests () {
   b.unittest.run_tests
 }
 
-# Asserts a function exit code is zero
-# @param return code -- return code of the command
+## Asserts a function exit code is zero
+## @param return code - return code of the command
 function b.unittest.assert_success () {
   if [ $1 -gt 0 ]; then
     print_e "'$@'... FAIL"
@@ -55,8 +55,8 @@ function b.unittest.assert_success () {
   return 0
 }
 
-# Asserts a functoin exit code is 1
-# @param funcname -- Name of the function
+## Asserts a functoin exit code is 1
+## @param funcname - Name of the function
 function b.unittest.assert_error () {
   if [ $1 -eq 0 ]; then
     print_e "'$@'... FAIL"
@@ -68,9 +68,9 @@ function b.unittest.assert_error () {
   return 0
 }
 
-# Asserts a function output is the same as required
-# @param reqvalue -- Value to be equals to the output
-# @param funcname -- Name of the function which result is to be tested
+## Asserts a function output is the same as required
+## @param reqvalue - Value to be equals to the output
+## @param funcname - Name of the function which result is to be tested
 function b.unittest.assert_equal () {
   local val="$1"
   shift
@@ -85,9 +85,9 @@ function b.unittest.assert_equal () {
   return 0
 }
 
-# Asserts a function will raise a given exception
-# @param funcname -- a string containing the name of the function which will raise an exception
-# @param exception -- a string containing the exception which should be raise
+## Asserts a function will raise a given exception
+## @param funcname - a string containing the name of the function which will raise an exception
+## @param exception - a string containing the exception which should be raise
 function b.unittest.assert_raise () {
   local fired=0
   function catch_exception () { fired=1 ; }
@@ -103,9 +103,9 @@ function b.unittest.assert_raise () {
   unset -f catch_exception
 }
 
-# Do a double for a function, replacing it codes for the other functions' code
-# @param func1 -- a string containing the name of the function to be replaced
-# @param func2 -- a string containing the name of the function which will replace func1
+## Do a double for a function, replacing it codes for the other functions' code
+## @param func1 - a string containing the name of the function to be replaced
+## @param func2 - a string containing the name of the function which will replace func1
 function b.unittest.double.do () {
   if is_function? "$1" && is_function? "$2"; then
     actualFunc=$(declare -f "$1" | sed '1d;2d;$d')
@@ -118,8 +118,8 @@ function b.unittest.double.do () {
   fi
 }
 
-# Undo the double for the function
-# @param func - the string containing the name of the function
+## Undo the double for the function
+## @param func - the string containing the name of the function
 function b.unittest.double.undo () {
   func_name=$(echo $1 | sed 's/\./_/g')
   if key_exists? "$func_name" "_BANG_MOCKS"; then

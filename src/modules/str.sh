@@ -13,7 +13,7 @@ function b.str.replace {
 ## @param varname - the name of the variable
 ## @param offset - the starting offset
 ## @param length - the length of chars to include
-function b.str.sub {
+function b.str.part {
   local varname="$(eval echo \$$1)"
   if [ $# -eq 3 ]; then
     echo ${varname: $2:$3}
