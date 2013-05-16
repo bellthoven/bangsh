@@ -142,7 +142,11 @@ function b.raised_message () {
 ## Simple implementation of the try statement which exists in other languages
 ## @param funcname - a string containing the name of the function that can raises an exception
 function b.try.do () {
-  is_function? "$1" && "$1"
+  local funcname="$1"
+  if is_function? "$funcname"; then
+    shift
+    $funcname "$@"
+  fi
 }
 
 ## Catches an exception fired by b.raise and executes a function
