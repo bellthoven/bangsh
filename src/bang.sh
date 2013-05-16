@@ -117,7 +117,7 @@ function print_e () {
 ## Raises an error an exit the code
 ## @param [msg ...] - Message of the error to be raised
 function b.abort () {
-  print_e "The program was aborted due an error:\n\n\t$*"
+  print_e "The program was aborted due to an error:\n\n\t$*"
   exit 2
 }
 
