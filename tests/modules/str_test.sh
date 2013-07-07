@@ -8,14 +8,14 @@ function b.test.str_replace () {
   b.unittest.assert_equal "$(b.str.replace foo not lala)" "Testing"
 }
 
-function b.test.str_sub () {
+function b.test.str_part () {
   local foo="Testing"
 
-  b.unittest.assert_equal "$(b.str.sub foo 2 3)" "sti"
-  b.unittest.assert_equal "$(b.str.sub foo 2)" "sting"
-  b.unittest.assert_equal "$(b.str.sub foo -2)" "ng"
-  b.unittest.assert_equal "$(b.str.sub foo 0 -2)" "Testi"
-  b.unittest.assert_raise b.str.sub InvalidArgumentsException
+  b.unittest.assert_equal "$(b.str.part foo 2 3)" "sti"
+  b.unittest.assert_equal "$(b.str.part foo 2)" "sting"
+  b.unittest.assert_equal "$(b.str.part foo -2)" "ng"
+  b.unittest.assert_equal "$(b.str.part foo 0 -2)" "Testi"
+  b.unittest.assert_raise b.str.part InvalidArgumentsException
 }
 
 function b.test.str_trim () {
