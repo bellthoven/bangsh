@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 BASEPATH=`dirname $0`
 source "${BASEPATH}/../src/bang.sh"
