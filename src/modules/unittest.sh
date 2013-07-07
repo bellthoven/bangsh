@@ -129,6 +129,14 @@ function b.unittest.double.undo () {
   fi
 }
 
+## Turns all doubled functions to its normal behavior
+function b.unittest.double.undo_all () {
+  for funcname in "${!_BANG_MOCKS[@]}"; do
+    b.unittest.double.undo "$funcname"
+  done
+}
+
+## Returns a list of loaded test cases
 function b.unittest.find_test_cases () {
   declare -f | grep '^b\.test\.' | sed 's/ ().*$//'
 }
