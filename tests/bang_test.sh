@@ -20,8 +20,8 @@ function b.test.escape_arg () {
   b.unittest.assert_equal "\\--foo" $(echo --foo | escape_arg)
   b.unittest.assert_equal '"--foo"' $(escape_arg "\"--foo\"")
   b.unittest.assert_equal '"--foo"' $(echo "\"--foo\"" | escape_arg)
-  b.unittest.assert_equal '"-f"' $(escape_arg -f)
-  b.unittest.assert_equal '"-f"' $(echo '-f' | escape_arg)
+  b.unittest.assert_equal '\-f' $(escape_arg -f)
+  b.unittest.assert_equal '\-f' $(echo '-f' | escape_arg)
 }
 
 function b.test.sanitize_arg () {
