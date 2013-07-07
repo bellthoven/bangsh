@@ -51,8 +51,7 @@ function b.unset () {
 ## Return whether the argument is a valid module
 ## @param module - the name of the module
 function is_module? () {
-  b.module.resolve_path "$1" &>/dev/null
-  return $?
+  b.module.exists? "$1"
 }
 
 ## Checks if the element is in the given array name
@@ -169,4 +168,15 @@ function b.finally () {
 function b.try.end () {
   $(b.get "Bang.Exception.Finally")
   b.unset Bang.Exception
+}
+
+function b.resolve_path () {
+  local file="$1"
+  shift
+  while [ -n "$1" ]; do
+    local file_path="$1/$file.sh"
+    test -f "$file_path" && echo "$file_path" && return 0
+    shift
+  done
+  return 1
 }

@@ -3,10 +3,11 @@ _BANG_MODULE_DIRS=("./modules" "$_BANG_PATH/modules")
 ## Includes a module file
 ## @param module - the name of the module
 function b.module.require () {
-  if is_module? "$1"; then
-    source "$(b.module.resolve_path $1)"
+  local module_path="$(b.module.resolve_path $1)"
+  if [ -n "$module_path" ]; then
+    source "$module_path"
   else
-    b.raise ModuleNotFound
+    b.raise ModuleNotFound "Module $1 was not found"
   fi
 }
 
@@ -27,8 +28,11 @@ function b.module.prepend_lookup_dir () {
 ## Resolves a module name for its path
 ## @param module - the name of the module
 function b.module.resolve_path () {
-  for path in "${_BANG_MODULE_DIRS[@]}"; do
-    [ -f "$path/$1.sh" ] && echo "$path/$1.sh" && return 0
-  done
-  return 1
+  b.resolve_path "$1" "${_BANG_MODULE_DIRS[@]}"
+}
+
+## Check whether a given module name exists and is loadable
+## @param module - the name of the module
+b.module.exists? () {
+  b.module.resolve_path "$1" &> /dev/null
 }

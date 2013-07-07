@@ -35,7 +35,7 @@ function b.unittest.run_tests () {
 
 ## Autoadd and run all test functions
 function b.unittest.autorun_tests () {
-  for func in $(declare -f | grep '^b\.test\.' | sed 's/ ().*$//'); do
+  for func in $(b.unittest.find_test_cases); do
     b.unittest.add_test_case "$func"
   done
   b.unittest.run_tests
@@ -125,5 +125,10 @@ function b.unittest.double.undo () {
     eval "function $1 () {
       ${_BANG_MOCKS["$func_name"]}
     }"
+    unset -v _BANG_MOCKS["$func_name"]
   fi
+}
+
+function b.unittest.find_test_cases () {
+  declare -f | grep '^b\.test\.' | sed 's/ ().*$//'
 }
