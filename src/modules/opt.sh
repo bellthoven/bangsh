@@ -1,4 +1,3 @@
-#!/bin/bash
 # Option parser module
 
 ## Resets this module

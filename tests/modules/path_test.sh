@@ -1,5 +1,3 @@
-#!/bin/bash
-
 b.module.require path
 
 function b.test.path_dir () {

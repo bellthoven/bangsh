@@ -1,4 +1,3 @@
-#!/bin/bash
 ## Unit Test Framework
 
 declare -A _BANG_MOCKS=()

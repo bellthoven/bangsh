@@ -1,5 +1,3 @@
-#!/bin/bash
-
 b.module.require str
 
 function b.test.str_replace () {

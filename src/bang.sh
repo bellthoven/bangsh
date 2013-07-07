@@ -1,4 +1,3 @@
-#!/bin/bash
 # BASH_SOURCE - BASH_ARGV - BASH_LINENO - FUNCNAME
 
 if [ ${#BASH_ARGV[@]} -eq 0 ]; then

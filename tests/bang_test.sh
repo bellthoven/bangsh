@@ -1,5 +1,3 @@
-#!/bin/bash
-
 function b.test.in_array () {
   local foo=('bar')
   # True!

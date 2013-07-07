@@ -1,5 +1,3 @@
-#!/bin/bash
-
 ## Expands a given path to its full path.
 ## If it has synlinks, it will be converted to the realpath.
 ## If it is a file, the path will also be expanded to realpath
