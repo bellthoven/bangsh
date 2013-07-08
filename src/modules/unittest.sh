@@ -1,6 +1,5 @@
 ## Unit Test Framework
 
-declare -A _BANG_MOCKS=()
 _BANG_TESTFUNCS=()
 _BANG_TESTDESCS=()
 _BANG_ASSERTIONS_FAILED=0
@@ -17,30 +16,6 @@ function b.unittest.add_test_case () {
   fi
 }
 
-## Runs all added test cases
-function b.unittest.run_tests () {
-  local i=0
-  #b.unittest.reset_tests
-  echo
-  while [ $i -lt ${#_BANG_TESTFUNCS[@]} ]; do
-    is_function? b.unittest.setup && b.unittest.setup
-    echo "Running testcase '${_BANG_TESTFUNCS[$i]}' (${_BANG_TESTDESCS[$i]})"
-    echo
-    ${_BANG_TESTFUNCS[$i]}
-    let i++
-    is_function? b.unittest.teardown && b.unittest.teardown
-  done
-  echo "$i tests executed (Assertions: $_BANG_ASSERTIONS_PASSED passed / $_BANG_ASSERTIONS_FAILED failed)"
-}
-
-## Autoadd and run all test functions
-function b.unittest.autorun_tests () {
-  for func in $(b.unittest.find_test_cases); do
-    b.unittest.add_test_case "$func"
-  done
-  b.unittest.run_tests
-}
-
 ## Asserts a function exit code is zero
 ## @param return code - return code of the command
 function b.unittest.assert_success () {
@@ -55,7 +30,7 @@ function b.unittest.assert_success () {
 }
 
 ## Asserts a functoin exit code is 1
-## @param funcname - Name of the function
+## @param func_name - Name of the function
 function b.unittest.assert_error () {
   if [ $1 -eq 0 ]; then
     print_e "'$@'... FAIL"
@@ -69,7 +44,7 @@ function b.unittest.assert_error () {
 
 ## Asserts a function output is the same as required
 ## @param reqvalue - Value to be equals to the output
-## @param funcname - Name of the function which result is to be tested
+## @param func_name - Name of the function which result is to be tested
 function b.unittest.assert_equal () {
   local val="$1"
   shift
@@ -85,7 +60,7 @@ function b.unittest.assert_equal () {
 }
 
 ## Asserts a function will raise a given exception
-## @param funcname - a string containing the name of the function which will raise an exception
+## @param func_name - a string containing the name of the function which will raise an exception
 ## @param exception - a string containing the exception which should be raise
 function b.unittest.assert_raise () {
   local fired=0
@@ -107,10 +82,12 @@ function b.unittest.assert_raise () {
 ## @param func2 - a string containing the name of the function which will replace func1
 function b.unittest.double.do () {
   if is_function? "$1" && is_function? "$2"; then
-    actualFunc=$(declare -f "$1" | sed '1d;2d;$d')
-    func=$(declare -f "$2" | sed '1d;2d;$d')
-    func_name=$(echo $1 | sed 's/\./_/g')
-    _BANG_MOCKS+=(["$func_name"]="$actualFunc")
+    local actualFunc=$(declare -f "$1" | sed '1d;2d;$d') \
+          func=$(declare -f "$2" | sed '1d;2d;$d') \
+          func_name="$1"
+    b.set "bang.unittest.doubles.$func_name" "$actualFunc"
+    local mocks="$(b.get bang.unittest.doubles)"
+    b.set "bang.unittest.doubles" "$mocks $func_name"
     eval "function $1 () {
       $func
     }"
@@ -120,20 +97,25 @@ function b.unittest.double.do () {
 ## Undo the double for the function
 ## @param func - the string containing the name of the function
 function b.unittest.double.undo () {
-  func_name=$(echo $1 | sed 's/\./_/g')
-  if key_exists? "$func_name" "_BANG_MOCKS"; then
+  local key="bang.unittest.doubles.$1"
+  if b.is_set? "$key"; then
+    local func_body="$(b.get $key)"
     eval "function $1 () {
-      ${_BANG_MOCKS["$func_name"]}
+      $func_body
     }"
-    unset -v _BANG_MOCKS["$func_name"]
+    b.unset "$key"
+    local mocks="$(b.get bang.unittest.doubles)"
+    b.set "bang.unittest.doubles" "${mocks//$1/}"
   fi
 }
 
 ## Turns all doubled functions to its normal behavior
 function b.unittest.double.undo_all () {
-  for funcname in "${!_BANG_MOCKS[@]}"; do
-    b.unittest.double.undo "$funcname"
+  IFS=" "
+  for func_name in $(b.get 'bang.unittest.doubles'); do
+    b.unittest.double.undo "$func_name"
   done
+  unset IFS
 }
 
 ## Returns a list of loaded test cases
