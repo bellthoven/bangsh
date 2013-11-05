@@ -15,7 +15,7 @@ It is pretty easy to write your first project.
 Now, you just have to source *bang.sh* with:
 
     #!/bin/bash
-	source bangsh/bang.sh
+	source bangsh/src/bang.sh
     echo "My first bang.sh app"
 
 And run it!
