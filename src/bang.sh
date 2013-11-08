@@ -7,7 +7,7 @@ fi
 
 _BANG_PATH=$( ( (
   _BANG_DIR="${BASH_ARGV[0]%bang.sh}"
-  cd -P "$_BANG_DIR"
+  cd -P "$_BANG_DIR" &> /dev/null
   echo "$PWD"
 ) ) )
 declare -A _BANG_REGISTRY=()
