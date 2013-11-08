@@ -175,7 +175,7 @@ function b.resolve_path () {
   shift
   while [ -n "$1" ]; do
     local file_path="$1/$file.sh"
-    test -f "$file_path" && echo "$file_path" && return 0
+    test -f "$file_path" && echo -n "$file_path" && return 0
     shift
   done
   return 1
