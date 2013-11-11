@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+SCRIPT_PATH="$(dirname $0)"
+
+source "$SCRIPT_PATH/../src/bang.sh"
+
+b.set bang.test_base_path "$PWD"
+
+cd "$SCRIPT_PATH" > /dev/null
+
+b.module.require task
+
+b.task.add test "Description"
+
+[ -n "$1" ] && b.task.run $1
