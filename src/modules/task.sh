@@ -18,11 +18,12 @@ function b.task.add () {
 ## @param task - the name of the task to run
 function b.task.run () {
   local task="$1"
+  shift
 
   if b.task.exists? "$task"; then
     local task_path="$(b.task.resolve_path $task)"
     source "$task_path"
-    "btask.$task.run"
+    "btask.$task.run" "$@"
   else
     b.raise TaskNotKnown "Task '$task' is unknown"
   fi

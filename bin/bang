@@ -9,7 +9,9 @@ b.set bang.test_base_path "$PWD"
 cd "$SCRIPT_PATH" > /dev/null
 
 b.module.require task
-
 b.task.add test "Description"
 
-[ -n "$1" ] && b.task.run $1
+task="$1"
+shift
+
+[ -n "$task" ] && b.task.run $task "$@"
