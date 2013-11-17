@@ -51,11 +51,8 @@ b.module.require path
 # $ bang test tests/a_single_test.sh --no-colors tests/modules/
 # ```
 function btask.test.run () {
-  echo "$*" | grep -q -v '\--no-colors'
-  local USE_COLORS=$?
-
   # Receives the passed args and removes the valid option `--no-colors`
-  local files="$(echo "$@" | sed 's/--no-colors//')" \
+  local files="${@%%--no-colors}" \
         base_path="$(b.path.expand `b.get 'bang.test_base_path'`)" \
         # Files used for communication between tests since they are run
         # isolated from each other
@@ -67,17 +64,16 @@ function btask.test.run () {
         green="" red="" reset=""
 
   # If there is no option `--no-colors` passed as arg, setup the colors than
-  if [ $USE_COLORS -eq 0 ]; then
+  if echo "$*" | grep -q -v '\--no-colors'; then
     green="\e[32m" red="\e[91m" reset="\e[0;0m"
   fi
 
-  local files_to_be_tested="$(_expand_files_to_be_tested ${files:-$base_path/tests})"
+  local files_to_be_tested="$(_expand_into_files ${files:-$base_path/tests})"
 
   if [ -n "$files_to_be_tested" ]; then
     time for file in $files_to_be_tested; do
       (
-        tests_path="$(b.get bang.test_base_path)"
-        relative_path="${file#tests_path}"
+        relative_path="${file#$base_path/}"
 
         _run_tests
       )
@@ -101,7 +97,7 @@ function btask.test.run () {
 # _expand_into_files tests/ # lookup for `tests/**/*_test.sh` files
 # _expand_into_files tests/a_single_test.sh tests/modules/ # lookup for `tests/a_single_test.sh tests/modules/**/*_test.sh`
 # ```
-function _expand_files_to_be_tested () {
+function _expand_into_files () {
   local files_to_be_tested="" path=""
   while [ $# -gt 0 ]; do
     if [ "${1:0:1}" = "/" ]; then
