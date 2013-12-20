@@ -53,7 +53,7 @@ b.module.require path
 function btask.test.run () {
   # Receives the passed args and removes the valid option `--no-colors`
   local files="${@%%--no-colors}" \
-        base_path="$(b.path.expand `b.get 'bang.test_base_path'`)" \
+        base_path="$(b.path.expand `b.get 'bang.working_dir'`)" \
         # Files used for communication between tests since they are run
         # isolated from each other
         failed_tests="$(mktemp -t bang.failing.XXXX)" \

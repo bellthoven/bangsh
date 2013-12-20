@@ -4,7 +4,7 @@ SCRIPT_PATH="$(dirname $0)"
 
 source "$SCRIPT_PATH/../src/bang.sh"
 
-b.set bang.test_base_path "$PWD"
+b.set bang.working_dir "$PWD"
 
 cd "$SCRIPT_PATH" > /dev/null
 

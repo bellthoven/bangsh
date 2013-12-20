@@ -1,5 +1,5 @@
 function b.test.task_test () {
-  b.set 'bang.test_base_path' 'fixtures'
+  b.set 'bang.working_dir' 'fixtures'
   local output="$( (
     unset -f b.test.task_test
     btask.test.run --no-colors
@@ -21,5 +21,5 @@ function b.test.task_test () {
   local outputs_test_error=$?
   b.unittest.assert_success $outputs_test_error
 
-  b.unset 'bang.test_base_path'
+  b.unset 'bang.working_dir'
 }
