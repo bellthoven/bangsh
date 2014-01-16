@@ -1,3 +1,27 @@
+# # Creating a new project
+#
+# This task is still very simple, although it helps a lot. It creates new
+# bang-based projects and generates an executable file with the project's name.
+#
+# The task takes only one argument which can be the project name or a path. In
+# the case only the name is given, the path used is the current directory.
+#
+# # Examples:
+#
+#     $ bang new my_project
+#     # Creates:
+#     #   - ./my_project
+#     #   |-- modules/.gitkeep
+#     #   |-- tasks/.gitkeep
+#     #   |-- my_project
+#
+#     $ bang new projects/task_new
+#     # Creates:
+#     #   - ./projects/
+#     #   |-- task_new/
+#     #     |-- modules/.gitkeep
+#     #     |-- tasks/.gitkeep
+#     #     |-- task_new
 function btask.new.run () {
   local project="$1"
   if [ -n "$project" ]; then
