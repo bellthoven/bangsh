@@ -46,6 +46,11 @@ function b.path.readable? () {
 function b.path.writable? () {
   test -w "$1"
 }
+## Returns whether the path is executable
+## @param path - the path to be checked
+function b.path.executable? () {
+  test -x "$1"
+}
 
 ## Returns whether the path is older than another path
 ## @param path - the path to be checked
