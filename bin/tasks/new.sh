@@ -1,9 +1,10 @@
 function btask.new.run () {
-  local project="$(echo $1 | sed 's#/#_#g')"
+  local project="$1"
   if [ -n "$project" ]; then
     (
       cd "$(b.get bang.working_dir)"
       mkdir -p "$project"
+
       _create_module_path
       _create_tasks_path
       _create_main_file
@@ -22,8 +23,10 @@ function _create_tasks_path () {
 }
 
 function _create_main_file () {
-  exec >> "$project/$project"
+  local project_name="$(basename "$project")"
+  exec >> "$project/$project_name"
+
   echo '#!/usr/bin/env bash'
   echo "source '$_BANG_PATH/bang.sh'"
-  chmod +x "$project/$project"
+  chmod +x "$project/$project_name"
 }

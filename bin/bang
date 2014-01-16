@@ -10,6 +10,7 @@ cd "$SCRIPT_PATH" > /dev/null
 
 b.module.require task
 b.task.add test "Description"
+b.task.add new "Description"
 
 task="$1"
 shift
