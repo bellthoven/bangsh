@@ -6,6 +6,7 @@ _BANG_TASK_DIRS=(./tasks "$BANG_PATH/tasks")
 ## @param description - a brief description for the task
 function b.task.add () {
   local task="$1" description="$2"
+
   if b.task.exists? "$task"; then
     b.set "bang.tasks.$task" "$description"
   else
@@ -17,13 +18,14 @@ function b.task.add () {
 ## @param task - the name of the task to run
 function b.task.run () {
   local task="$1"
+  shift
 
-  if b.task.exists? "$1"; then
-    local task_path="$(b.task.resolve_path $1)"
+  if b.task.exists? "$task"; then
+    local task_path="$(b.task.resolve_path $task)"
     source "$task_path"
-    "btask.$1.run"
+    "btask.$task.run" "$@"
   else
-    b.raise TaskNotKnown "Task '$1' is unknown"
+    b.raise TaskNotKnown "Task '$task' is unknown"
   fi
 }
 

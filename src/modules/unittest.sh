@@ -122,3 +122,18 @@ function b.unittest.double.undo_all () {
 function b.unittest.find_test_cases () {
   declare -f | grep '^b\.test\.' | sed 's/ ().*$//'
 }
+
+## Execute and return whether a test case was run successfuly
+##
+## @param test_case - a test case function name
+function b.unittest.run_successfuly? () {
+  local test_case="$1"
+  local FAILED_ASSERTIONS_BEFORE="$_BANG_ASSERTIONS_FAILED"
+
+  is_function? b.unittest.setup && b.unittest.setup
+  $test_case
+  b.unittest.double.undo_all
+  is_function? b.unittest.teardown && b.unittest.teardown
+
+  [ $_BANG_ASSERTIONS_FAILED -eq $FAILED_ASSERTIONS_BEFORE ]
+}
