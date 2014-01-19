@@ -1,69 +1,73 @@
-Bang.sh - Framework for easy Shell Scripting
-============================================
+Bang.sh - for easy Shell Scripting
+==================================
 
 This framework is intended to help on easy bash script development. It is totally modularized.
 It helps you developing new Bash Script programs by forcing you to modularize and organize
 your code in functions, so that your program can be tested.
 
-It is pretty easy to write your first project.
+# Installation
 
-    $ mkdir your_project
-	$ cd your_project
-	$ git clone git://github.com/bellthoven/bangsh.git
-	$ vim your_project.sh
+You can clone the bang repository in any path. For instance,
 
-Now, you just have to source *bang.sh* with:
+```bash
+cd /usr/local/
+git clone git://github.com/bellthoven/bangsh.git
+```
 
-    #!/bin/bash
-	source bangsh/src/bang.sh
-    echo "My first bang.sh app"
+You can `cd bangsh` and then `bin/bang test`. It will run all test suites.
+If all tests pass, you're good to go. In order to have a better experience,
+add the `bin/` path to your `$PATH` environment variable, something like:
 
-And run it!
+```bash
+export PATH="$PATH:/usr/local/bangsh/bin/"
+```
 
-    $ bash your_project.sh
+# Creating a new project
 
-Or make it executable
+Since `bang` is now executable from any directory, you can create your own
+project by typing:
 
-	$ chmod +x your_project.sh
-	$ ./your_project.sh
+```bash
+bang new my_project
+```
 
-To make sure everything is fine, you can run all framework tests by typing:
+This command will create a directory called `my_project/`. There will be some
+directories which are intended to place some specific files. They are listed below.
 
-    $ cd bangsh ; make test ; cd -
+## Modules
 
-Now you can start developing your own modules and use it in your application.
+A module is a bunch of functions that have a certain domain. It works like a
+namespace for aggregating functions. The general idea is to have it isolated,
+so it could be copied and pasted into another project in a such way it would
+not rely on any other dependency but Bang.
 
-    $ mkdir modules
-	$ vim modules/my_first_module.sh
+### Example:
 
-Create some function there. It is a good practice to prefix your functions, just to be sure
-it will not override any other already defined.
+```bash
+# modules/my_first_module.sh
 
-    #!/bin/bash
+function my_first_module_says () {
+  echo "My first module says: $*"
+}
+```
 
-	function my_first_module_says () {
-		echo "My first module says: $*"
-	}
+Now, you can use the module in your executable file:
 
-Now, will end up with some tree like this:
+```bash
+#!/usr/bin/env bash
+source "/usr/local/bangsh/src/bang.sh"
 
-    bangsh/
-	  |- src/
-	    |- modules/
-		|- bang.sh
-	  |- tests/
-	    |- a lot of files
-	  |- a lot of files
-	modules/
-	  |- my_first_module.sh
-	your_project.sh
+b.module.require my_first_module
 
-You can now source your module with *resolve_module_path* function. It'll lookup firstly in your modules directory,
-then it'll lookup into bangsh/src/modules/ directory. Like this:
+my_first_module_says "Hey!"
+```
 
-    source $(resolve_module_path my_first_module)
-	my_first_module_says "Hello, World"
-
+This will lookup into `modules/` path looking for the module and source it.
 More directories can be added to the list with
-*prepend_module_dir* and *append_module_dir*. Unfortunelly, the framework is not fully documented, so you may have
+*prepend_module_dir* and *append_module_dir*. Unfortunately, the framework is not fully documented, so you may have
 to dig into its code to see what you can do. A good start point are the unit tests !
+
+## Tasks
+
+A task is like an action your executable will perform. It is how `bang new` and `bang test` work.
+To see more about tasks, check [bang's executable](https://github.com/bellthoven/bangsh/blob/master/bin/bang)
