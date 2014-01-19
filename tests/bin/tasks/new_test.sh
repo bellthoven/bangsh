@@ -1,7 +1,7 @@
 b.module.require path
 
 function b.unittest.setup () {
-  local tmpdir="$(mktemp -d -t 'task_test')"
+  local tmpdir="$(mktemp -d -t 'task_test.XXXX')"
   b.set 'testing.tmpdir' "$tmpdir"
 }
 

@@ -1,7 +1,7 @@
 b.module.require path
 
 function b.test.path_dir () {
-  local tempdir=$(mktemp -d -t testing)
+  local tempdir=$(mktemp -d -t testing.XXXX)
 
   b.path.dir? "$tempdir"
   b.unittest.assert_success $?
@@ -11,7 +11,7 @@ function b.test.path_dir () {
 }
 
 function b.test.path_file () {
-  local tempfile=$(mktemp -t testing)
+  local tempfile=$(mktemp -t testing.XXXX)
 
   b.path.file? "$tempfile"
   b.unittest.assert_success $?
@@ -22,7 +22,7 @@ function b.test.path_file () {
 
 function b.test.path_expand () {
   local tempdir=$( ( ( cd -P ${TMPDIR:-/tmp} ; echo $PWD ) ) )
-  local dir=$(mktemp -d -t 'dir') file=$(mktemp -t 'file')
+  local dir=$(mktemp -d -t 'dir.XXXX') file=$(mktemp -t 'file.XXXX')
   local dirsuffix="${dir#${dir%%.*}}" filesuffix="${file#${file%%.*}}"
   ln -s "$dir" "${dir}2"
 

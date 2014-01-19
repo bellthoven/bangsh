@@ -60,6 +60,7 @@ function btask.test.run () {
         passed_tests="$(mktemp -t bang.passing.XXXX)" \
         test_error_msgs="$(mktemp -t bang.tmp.error_msgs.XXXX)" \
         test_errors="$(mktemp -t bang.error_msgs.XXXX)" \
+        suite_passed=0 \
         # colors
         green="" red="" reset=""
 
@@ -82,10 +83,14 @@ function btask.test.run () {
     local passed_tests_count=$(cat "$passed_tests" | wc -l) \
           failed_tests_count=$(cat "$failed_tests" | wc -l)
 
+    test "$failed_tests_count" -eq 0
+    suite_passed=$?
+
     _print_final_output
   fi
 
   rm "$failed_tests" "$passed_tests" "$test_error_msgs" "$test_errors"
+  exit $suite_passed
 }
 
 # Internal: Expand passed args into filenames so that they can be sourced and
