@@ -1,6 +1,8 @@
 Bang.sh - for easy Shell Scripting
 ==================================
 
+[![Build Status](https://travis-ci.org/bellthoven/bangsh.png)](https://travis-ci.org/bellthoven/bangsh)
+
 This framework is intended to help on easy bash script development. It is totally modularized.
 It helps you developing new Bash Script programs by forcing you to modularize and organize
 your code in functions, so that your program can be tested.
