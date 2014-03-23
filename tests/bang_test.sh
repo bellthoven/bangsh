@@ -87,3 +87,19 @@ function b.test.finally_is_called_when_exception_is_not_raised () {
   unset -f catchblock
   unset -f will_be_zero
 }
+
+function b.test.depends_on_raises_an_exception_when_command_is_not_executable () {
+  function check_dependency () {
+    b.depends_on some_weird_command
+  }
+
+  b.unittest.assert_raise check_dependency DependencyNotMetException
+
+  unset -f check_dependency
+}
+
+function b.test.depends_on_returns_true_when_command_is_executable () {
+  b.depends_on 'bash'
+
+  b.unittest.assert_true $?
+}
