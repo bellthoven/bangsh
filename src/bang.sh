@@ -128,7 +128,7 @@ function b.raise () {
     b.set "Bang.Exception.Name" "$exception"
     b.set "Bang.Exception.Msg" "$*"
   else
-    b.abort "Uncautch exception $exception: $*"
+    b.abort "Uncaught exception $exception: $*"
   fi
 }
 

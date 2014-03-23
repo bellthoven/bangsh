@@ -149,6 +149,13 @@ function b.opt.init () {
   done
 }
 
+## Checks for required installed apps.. if some is missing, raises an error
+function b.opt.check_required_apps() {
+  for app in $1; do 
+    which "$app" &>/dev/null || b.raise RequiredAppNotInstalled "please install '$app'"
+  done
+}
+
 ## Checks for required args... if some is missing, raises an error
 function b.opt.check_required_args() {
   local reqopt="" required_options="$(b.get Bang.Opt.Required)"
