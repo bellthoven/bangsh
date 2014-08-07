@@ -4,6 +4,7 @@ _BANG_MODULE_DIRS=("./modules" "$_BANG_PATH/modules")
 ## @param module - the name of the module
 function b.module.require () {
   local module_path="$(b.module.resolve_path $1)"
+
   if [ -n "$module_path" ]; then
     source "$module_path"
   else
