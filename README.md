@@ -119,7 +119,7 @@ The unittest module provides useful functions for testing. In order to peform as
 
 There are a few extra functions for more complex scenarios, you can learn about them in the [unittest module source](https://github.com/bellthoven/bangsh/blob/master/src/modules/unittest.sh)
 
-There's a [great test task](https://github.com/bellthoven/bangsh/blob/master/bin/tasks/test.sh) used by the bang binary itself. It prints colors and have some nice defaults that you can use in your project during development. Simpli execute the `bang test` command inside your project's root path. If you put that path in your PATH env var, you can simply run bang test:
+There's a [great test task](https://github.com/bellthoven/bangsh/blob/master/bin/tasks/test.sh) used by the bang binary itself. It prints colors and have some nice defaults that you can use in your project during development. Simply execute the `bang test` command inside your project's root path. If you put that path in your PATH env var, you can simply run bang test:
 
 ```
 $ exprot PATH="$PATH:/path/to/bang.sh/bin/"
