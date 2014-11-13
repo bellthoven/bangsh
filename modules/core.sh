@@ -1,18 +1,4 @@
-# BASH_SOURCE - BASH_ARGV - BASH_LINENO - FUNCNAME
-
-if [ ${#BASH_ARGV[@]} -eq 0 ]; then
-  echo "bang.sh should be sourced, not executed directly"
-  exit 2
-fi
-
-_BANG_PATH=$( ( (
-  _BANG_DIR="${BASH_ARGV[0]%bang.sh}"
-  cd -P "$_BANG_DIR" &> /dev/null
-  echo "$PWD"
-) ) )
 declare -A _BANG_REGISTRY=()
-
-source "${_BANG_PATH}/modules/module.sh"
 
 ## Sets a globally scoped variable using Registry Pattern
 ## @param varname - the name of the variable

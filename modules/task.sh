@@ -1,4 +1,4 @@
-_BANG_TASK_DIRS=(./tasks "$BANG_PATH/tasks")
+_BANG_TASK_DIRS=(./tasks "$_BANG_PATH/tasks")
 
 ## Adds a new task. It is possible to add a description which is used when
 ## describing it.
