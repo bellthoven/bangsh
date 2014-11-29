@@ -1,1 +1,1 @@
-script: 'bin/bang test'
+script: './bang test'
