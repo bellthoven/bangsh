@@ -1,5 +1,4 @@
 b.module.require unittest
-b.module.require path
 
 # # Running tests
 #
