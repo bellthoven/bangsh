@@ -72,7 +72,7 @@ function b.opt.aliases_for () {
   for aliasname in $(b.get "Bang.Opt.AliasFor.$opt"); do
     aliases+=("${aliasname#Bang.Opt.Alias.}")
   done
-  echo "${aliases[@]}"
+  printf "%s" "${aliases[@]}"
 }
 
 ## Sets the required args of the command line
