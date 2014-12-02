@@ -115,6 +115,14 @@ function b.test.get_opt () {
   b.unittest.assert_equal "bar" $(b.opt.get_opt --foo)
 }
 
+function b.test.test_usage_output () {
+  b.opt.add_opt --email "Set the email"
+  b.opt.add_alias --email -e
+
+  b.opt.show_usage | grep -q -e '--email|-e'
+  b.unittest.assert_success $?
+}
+
 b.unittest.add_test_case b.test.if_options_exists "Test b.opt options"
 b.unittest.add_test_case b.test.if_flag_exists "Test b.opt flags"
 b.unittest.add_test_case b.test.option_and_flag_aliasing "Test both, option and flag aliasing"
