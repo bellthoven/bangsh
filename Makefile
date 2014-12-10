@@ -1,5 +1,5 @@
+test:
+	bang test
 
-init :
-
-test :
-	@cd ./tests ; ./test_all.sh
+install:
+	sudo ln -fs "${PWD}/bang" /usr/local/bin/bang

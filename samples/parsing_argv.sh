@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bang run
 
 BANG_DIR="${0%`basename $0`}/../src"
 

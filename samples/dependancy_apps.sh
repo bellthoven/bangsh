@@ -1,7 +1,4 @@
-#!/bin/bash
-SCRIPT_PATH=$(dirname $0)
-
-source "$SCRIPT_PATH/../src/bang.sh"
+#!/usr/bin/env bang run
 
 function print_how_to_install_git () {
   exec >&2

@@ -50,7 +50,6 @@ function _create_main_file () {
   local project_name="$(basename "$project")"
   exec >> "$project/$project_name"
 
-  echo '#!/usr/bin/env bash'
-  echo "source '$_BANG_PATH/bang.sh'"
+  echo '#!/usr/bin/env bash run'
   chmod +x "$project/$project_name"
 }
