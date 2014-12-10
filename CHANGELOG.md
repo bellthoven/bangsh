@@ -1,1 +1,3 @@
+* Add the `bang run` task. It must be used as entry point for bang apps
+* Fix `b.opt.show_usage` that was not showing options due to problems on echoing options
 * Add `b.depends_on` using the [@coderofsalvation Pull Request](https://github.com/bellthoven/bangsh/pull/10)
