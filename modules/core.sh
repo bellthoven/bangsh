@@ -174,7 +174,7 @@ function b.resolve_path () {
 ## @param dependency - a string containing the name or a path of the command to be checked
 function b.depends_on () {
   local dependency="$1"
-  if ! which -s "$dependency"; then
+  if ! which "$dependency" &> /dev/null; then
     b.raise DependencyNotMetException "This script depends on '$dependency', but it is not executable. Check your \$PATH definition or install it before running."
     return 1
   fi
