@@ -134,7 +134,7 @@ function b.opt.init () {
     arg=$(b.opt.alias2opt $arg)
     if b.opt.is_opt? "$arg"; then
       local ii=$(($i + 1))
-      local nextArg=$(eval "echo \$$ii")
+      local nextArg=$(eval "echo \${$ii}")
       if [ -z "$nextArg" ] || b.opt.is_opt? "$nextArg" || b.opt.is_flag? "$nextArg"; then
         b.raise ArgumentError "Option '$arg' requires an argument."
       else

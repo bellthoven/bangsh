@@ -1,7 +1,3 @@
-#!/bin/bash
-
-b.module.require opt
-
 function b.unittest.teardown {
   b.opt.reset
 }
@@ -121,4 +117,20 @@ function b.test.test_usage_output () {
 
   b.opt.show_usage | grep -q -e '--email|-e'
   b.unittest.assert_success $?
+}
+
+function b.test.test_more_than_five_options () {
+  b.opt.add_opt --opt1
+  b.opt.add_opt --opt2
+  b.opt.add_opt --opt3
+  b.opt.add_opt --opt4
+  b.opt.add_opt --opt5
+
+  b.init --opt1 one --company two --grove three --index four --password five
+
+  b.opt.assert_equal "$(b.opt.get_opt --opt1)" "one"
+  b.opt.assert_equal "$(b.opt.get_opt --opt2)" "two"
+  b.opt.assert_equal "$(b.opt.get_opt --opt3)" "three"
+  b.opt.assert_equal "$(b.opt.get_opt --opt4)" "four"
+  b.opt.assert_equal "$(b.opt.get_opt --opt5)" "five"
 }
