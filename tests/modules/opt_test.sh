@@ -126,11 +126,11 @@ function b.test.test_more_than_five_options () {
   b.opt.add_opt --opt4
   b.opt.add_opt --opt5
 
-  b.init --opt1 one --company two --grove three --index four --password five
+  b.opt.init --opt1 one --opt2 two --opt3 three --opt4 four --opt5 five
 
-  b.opt.assert_equal "$(b.opt.get_opt --opt1)" "one"
-  b.opt.assert_equal "$(b.opt.get_opt --opt2)" "two"
-  b.opt.assert_equal "$(b.opt.get_opt --opt3)" "three"
-  b.opt.assert_equal "$(b.opt.get_opt --opt4)" "four"
-  b.opt.assert_equal "$(b.opt.get_opt --opt5)" "five"
+  b.unittest.assert_equal "$(b.opt.get_opt --opt1)" "one"
+  b.unittest.assert_equal "$(b.opt.get_opt --opt2)" "two"
+  b.unittest.assert_equal "$(b.opt.get_opt --opt3)" "three"
+  b.unittest.assert_equal "$(b.opt.get_opt --opt4)" "four"
+  b.unittest.assert_equal "$(b.opt.get_opt --opt5)" "five"
 }
