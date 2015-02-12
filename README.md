@@ -21,20 +21,40 @@ If all tests pass, you're good to go. In order to have a better experience,
 add the `bin/` path to your `$PATH` environment variable, something like:
 
 ```bash
-export PATH="$PATH:/usr/local/bangsh/bin/"
+export PATH="$PATH:/usr/local/bangsh/"
+```
+
+# Hello World
+
+Basically, `bang.sh` allows you to run any bash file. A "hello world" program
+would be like this:
+
+```bash
+$ echo 'echo "Hello World"' > hello_world.sh
+$ bang run hello_world.sh
 ```
 
 # Creating a new project
 
-Since `bang` is now executable from any directory, you can create your own
-project by typing:
+Bang projects are an organized way of placing your files. In order to create
+a new project, you can just run:
 
 ```bash
 bang new my_project
 ```
 
 This command will create a directory called `my_project/`. There will be some
-directories which are intended to place some specific files. They are listed below.
+directories which are intended to place some specific files.
+
+```bash
+ - my_project
+ - modules/
+ - tasks/
+```
+
+My project is a executable file that can be run as `./my_project` or with `bang run my_project`.
+`modules/` and `tasks/` are where you place your files. All files in the `modules/` path is
+automatically loaded, so you can define any function in there, that it will be available in `my_project` file.
 
 # The "b" namespace
 
@@ -63,23 +83,12 @@ function my_first_module_says () {
 Now, you can use the module in your executable file:
 
 ```bash
-#!/usr/bin/env bash
-source "/usr/local/bangsh/src/bang.sh"
-
-b.module.require my_first_module
+#!/usr/bin/env bang run
 
 my_first_module_says "Hey!"
 ```
 
-This will lookup into `modules/` path looking for the module and source it, hence every function defined in a module will be available inside the file where the module was required.
-
-More directories can be added to the list with
-`b.module.prepend_module_dir` and `b.module.append_module_dir`. The difference is the precedence of the indicated path during the lookup process.
-
-When a module cannot be found, a `ModuleNotFound` exception will be raised. You can use this to control flow using with exception handling (explained below).
-
 Remember that exactly like your own modules, those included with bang by default must be required before using them. e.g: `b.module.require path`
-
 
 # Tasks
 
