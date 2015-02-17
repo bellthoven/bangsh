@@ -50,6 +50,7 @@ directories which are intended to place some specific files.
  - my_project
  - modules/
  - tasks/
+ - tests/
 ```
 
 My project is a executable file that can be run as `./my_project` or with `bang run my_project`.
