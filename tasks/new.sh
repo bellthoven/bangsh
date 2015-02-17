@@ -13,6 +13,7 @@
 #     #   - ./my_project
 #     #   |-- modules/.gitkeep
 #     #   |-- tasks/.gitkeep
+#     #   |-- tests/.gitkeep
 #     #   |-- my_project
 #
 #     $ bang new projects/task_new
@@ -21,6 +22,7 @@
 #     #   |-- task_new/
 #     #     |-- modules/.gitkeep
 #     #     |-- tasks/.gitkeep
+#     #     |-- tests/.gitkeep
 #     #     |-- task_new
 function btask.new.run () {
   local project="$1"
@@ -31,6 +33,7 @@ function btask.new.run () {
 
       _create_module_path
       _create_tasks_path
+      _create_tests_path
       _create_main_file
     )
   fi
@@ -46,10 +49,18 @@ function _create_tasks_path () {
   touch "$project/tasks/.gitkeep"
 }
 
+function _create_tests_path () {
+  mkdir -p "$project/tests"
+  touch "$project/tests/.gitkeep"
+}
+
 function _create_main_file () {
   local project_name="$(basename "$project")"
   exec >> "$project/$project_name"
 
-  echo '#!/usr/bin/env bash run'
+  echo '#!/usr/bin/env bang run'
+  echo
+  echo '[ -n "$1" ] && b.task.run "$@"'
+
   chmod +x "$project/$project_name"
 }
