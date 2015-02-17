@@ -58,7 +58,7 @@ function _create_main_file () {
   local project_name="$(basename "$project")"
   exec >> "$project/$project_name"
 
-  echo '#!/usr/bin/env bash run'
+  echo '#!/usr/bin/env bang run'
   echo
   echo '[ -n "$1" ] && b.task.run "$@"'
 
