@@ -1,7 +1,7 @@
 Bang.sh - for easy Shell Scripting
 ==================================
 
-[![Build Status](https://travis-ci.org/bellthoven/bangsh.png)](https://travis-ci.org/bellthoven/bangsh)
+[![Build Status](https://travis-ci.org/bangsh/bangsh.png)](https://travis-ci.org/bangsh/bangsh)
 
 This framework is intended to help on easy bash script development. It is totally modularized.
 It helps you developing new Bash Script programs by forcing you to modularize and organize
@@ -13,7 +13,7 @@ You can clone the bang repository in any path. For instance,
 
 ```bash
 cd /usr/local/
-git clone git://github.com/bellthoven/bangsh.git
+git clone git://github.com/bangsh/bangsh.git
 ```
 
 You can `cd bangsh` and then `bin/bang test`. It will run all test suites.
@@ -113,7 +113,7 @@ function _create_module_path () {
 
 This is useful to distinguish "where" a given function comes from and to avoid name collisions with executables in the path.
 
-To see more about tasks, check [bang's executable](https://github.com/bellthoven/bangsh/blob/master/bin/bang) to get an idea of how to use the task module in the main executable of your program as a way to create subcommands.
+To see more about tasks, check [bang's executable](https://github.com/bangsh/bangsh/blob/master/bin/bang) to get an idea of how to use the task module in the main executable of your program as a way to create subcommands.
 
 Keep in mind that you can trigger tasks from withing other tasks, allowing you to create nested subcommands for very expressive CLI tools. Related to this, the `opt` module allows you to have a configuration layer for each task, allowing to have this king of calls: `bang test --test-specific-option` and `bang new --new-task-option`
 
@@ -126,9 +126,9 @@ The unittest module provides useful functions for testing. In order to peform as
 * `b.unittest.assert_raise`: Asserts a function will raise a given exception
 * `b.unittest.assert_success`: Asserts a function exit code is zero
 
-There are a few extra functions for more complex scenarios, you can learn about them in the [unittest module source](https://github.com/bellthoven/bangsh/blob/master/src/modules/unittest.sh)
+There are a few extra functions for more complex scenarios, you can learn about them in the [unittest module source](https://github.com/bangsh/bangsh/blob/master/src/modules/unittest.sh)
 
-There's a [great test task](https://github.com/bellthoven/bangsh/blob/master/bin/tasks/test.sh) used by the bang binary itself. It prints colors and have some nice defaults that you can use in your project during development. Simply execute the `bang test` command inside your project's root path. If you put that path in your PATH env var, you can simply run bang test:
+There's a [great test task](https://github.com/bangsh/bangsh/blob/master/bin/tasks/test.sh) used by the bang binary itself. It prints colors and have some nice defaults that you can use in your project during development. Simply execute the `bang test` command inside your project's root path. If you put that path in your PATH env var, you can simply run bang test:
 
 ```
 $ exprot PATH="$PATH:/path/to/bang.sh/bin/"
@@ -146,7 +146,7 @@ Exposes functions to simplify common checks on paths, like: doest this file exis
 
 # opt module
 
-Helps you parse options. You can define flags, option aliases and define required arguments. The module can generate usage information if a required argument was missing. You can see the code in the [parsing arguments example](https://github.com/bellthoven/bangsh/blob/master/samples/parsing_argv.sh) or check [the source](https://github.com/bellthoven/bangsh/blob/master/src/modules/opt.sh) that is pretty expressive about the exposed API.
+Helps you parse options. You can define flags, option aliases and define required arguments. The module can generate usage information if a required argument was missing. You can see the code in the [parsing arguments example](https://github.com/bangsh/bangsh/blob/master/samples/parsing_argv.sh) or check [the source](https://github.com/bangsh/bangsh/blob/master/src/modules/opt.sh) that is pretty expressive about the exposed API.
 
 # Misc. utils
 
@@ -157,11 +157,11 @@ By sourcing bang.sh you get by default some useful utils, e.g:
 * Check if something is a function: `is_function? foo`
 * Raise and error and exit with code 2: `b.abort`
 * Print to stderr `print_e`
-* Sanitize an argument with `sanitize_arg` this is useful to remove semicolons, pipes, ampersands, etc. that could lead to code injections. Examples can be found in the [bang tests](https://github.com/bellthoven/bangsh/blob/master/tests/bang_test.sh#L27-L32)
+* Sanitize an argument with `sanitize_arg` this is useful to remove semicolons, pipes, ampersands, etc. that could lead to code injections. Examples can be found in the [bang tests](https://github.com/bangsh/bangsh/blob/master/tests/bang_test.sh#L27-L32)
 * Escape argument: `escape_arg` (turns -- into \--)
 * Check whether the argument is a valid module: `is_module?` 
 
-All this helpers together with others (like the global scope variables), are defined in the [bang.sh source](https://github.com/bellthoven/bangsh/blob/master/src/bang.sh)
+All this helpers together with others (like the global scope variables), are defined in the [bang.sh source](https://github.com/bangsh/bangsh/blob/master/src/bang.sh)
 
 # Checking for dependencies
 
