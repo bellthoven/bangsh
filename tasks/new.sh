@@ -59,5 +59,8 @@ function _create_main_file () {
   exec >> "$project/$project_name"
 
   echo '#!/usr/bin/env bash run'
+  echo
+  echo '[ -n "$1" ] && b.task.run "$@"'
+
   chmod +x "$project/$project_name"
 }
